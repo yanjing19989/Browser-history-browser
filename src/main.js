@@ -17,7 +17,7 @@ const state = {
   sortOrder: 'desc' // 默认降序
 };
 
-async function fetchStats(){
+async function fetchStats() {
   try {
     // 处理统计的时间范围
     let timeRange = state.timeRange;
@@ -29,12 +29,12 @@ async function fetchStats(){
 
     const stats = await invoke('stats_overview', { time_range: timeRange });
     renderKpis(stats);
-  } catch(e){ 
+  } catch (e) {
     console.error('获取统计失败:', e);
   }
 }
 
-async function fetchList(){
+async function fetchList() {
   try {
     // 构建过滤器对象
     const filters = {
@@ -63,14 +63,14 @@ async function fetchList(){
     });
     state.items = res.items;
     state.total = res.total;
-    
+
     renderTable();
-  } catch(e){ 
+  } catch (e) {
     console.error('获取历史记录失败:', e);
   }
 }
 
-function renderKpis(stats){
+function renderKpis(stats) {
   const kpis = document.getElementById('kpis');
   kpis.innerHTML = '';
   const data = [
@@ -86,7 +86,7 @@ function renderKpis(stats){
   });
 }
 
-function renderTable(){
+function renderTable() {
   const tbody = document.getElementById('historyTBody');
   tbody.innerHTML = '';
   state.items.forEach(item => {
@@ -123,17 +123,17 @@ function handleSort(sortBy) {
     state.sortBy = sortBy;
     state.sortOrder = sortBy === 'title' ? 'asc' : 'desc'; // 标题默认升序，其他默认降序
   }
-  
+
   // 重置到第一页并重新获取数据
   state.page = 1;
   fetchList();
-}function showDetail(item){
+} function showDetail(item) {
   const panel = document.getElementById('detailContent');
   const actions = document.getElementById('detailActions');
 
   // 格式化显示内容
   const formatTime = (ts) => {
-    if(!ts || ts === 0) return '-';
+    if (!ts || ts === 0) return '-';
     const d = new Date(ts * 1000);
     return d.toLocaleString('zh-CN', {
       year: 'numeric',
@@ -246,12 +246,12 @@ function showToast(message, type = 'info') {
 }
 
 // Helpers
-function escapeHtml(str){
-  return str.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+function escapeHtml(str) {
+  return str.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', '\'': '&#39;' }[c]));
 }
-function shorten(str, len){ return str.length>len ? str.slice(0,len-3)+'...' : str; }
-function fmtTime(ts){ 
-  if(!ts || ts === 0) return '-'; 
+function shorten(str, len) { return str.length > len ? str.slice(0, len - 3) + '...' : str; }
+function fmtTime(ts) {
+  if (!ts || ts === 0) return '-';
   // ts 是从1970年1月1日UTC开始的秒数，需要转换为毫秒
   const d = new Date(ts * 1000);
   // 使用本地时间格式显示
@@ -266,14 +266,14 @@ function fmtTime(ts){
 }
 
 // Events
-window.addEventListener('keydown', e=>{ if(e.ctrlKey && e.key.toLowerCase()==='k'){ e.preventDefault(); document.getElementById('searchInput').focus(); }});
+window.addEventListener('keydown', e => { if (e.ctrlKey && e.key.toLowerCase() === 'k') { e.preventDefault(); document.getElementById('searchInput').focus(); } });
 
-document.getElementById('searchBtn').addEventListener('click', ()=>{
+document.getElementById('searchBtn').addEventListener('click', () => {
   state.keyword = document.getElementById('searchInput').value.trim();
   state.page = 1; fetchList();
 });
 
-document.getElementById('applyFilters').addEventListener('click', ()=>{
+document.getElementById('applyFilters').addEventListener('click', () => {
   state.timeRange = document.getElementById('timeRange').value;
   state.startDate = document.getElementById('startDate').value;
   state.endDate = document.getElementById('endDate').value;
@@ -300,11 +300,11 @@ document.getElementById('timeRange').addEventListener('change', (e) => {
   }
 });
 
-document.getElementById('prevPage').addEventListener('click', ()=>{ if(state.page>1){ state.page--; fetchList(); }});
+document.getElementById('prevPage').addEventListener('click', () => { if (state.page > 1) { state.page--; fetchList(); } });
 
-document.getElementById('nextPage').addEventListener('click', ()=>{ if(state.page < Math.ceil(state.total/state.pageSize)){ state.page++; fetchList(); }});
+document.getElementById('nextPage').addEventListener('click', () => { if (state.page < Math.ceil(state.total / state.pageSize)) { state.page++; fetchList(); } });
 
-document.getElementById('settingsBtn').addEventListener('click', ()=>{ window.location.href = 'settings.html'; });
+document.getElementById('settingsBtn').addEventListener('click', () => { window.location.href = 'settings.html'; });
 
 // 添加排序事件监听器
 document.addEventListener('DOMContentLoaded', () => {

@@ -52,13 +52,13 @@ fn build_order_clause(sort_by: &Option<String>, sort_order: &Option<String>) -> 
         Some("last_visited_time") | None => "last_visited_time", // 默认按访问时间排序
         _ => "last_visited_time",
     };
-    
+
     let order = match sort_order.as_deref() {
         Some("asc") => "ASC",
         Some("desc") | None => "DESC", // 默认降序
         _ => "DESC",
     };
-    
+
     format!("ORDER BY {} {}", sort_field, order)
 }
 
