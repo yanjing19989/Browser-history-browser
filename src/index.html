@@ -6,6 +6,7 @@
   <title>浏览历史可视化</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <script src="theme-init.js"></script>
   <link rel="stylesheet" href="style.css" />
 </head>
 
@@ -16,6 +17,9 @@
       <div class="search-bar">
         <input id="searchInput" type="text" placeholder="搜索标题或URL... (Ctrl+K)" />
         <button id="searchBtn">搜索</button>
+      </div>
+      <div class="theme-switcher">
+        <button id="themeBtn" class="theme-btn" title="切换主题">🌓 自动</button>
       </div>
       <button id="settingsBtn" class="nav-btn" title="设置">⚙️</button>
     </div>
@@ -74,6 +78,7 @@
       <div id="detailContent">选择一条记录查看...</div>
     </aside>
   </main>
+  <script src="theme.js"></script>
   <script src="main.js"></script>
 </body>
 
