@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct HistoryItem {
@@ -24,13 +24,18 @@ pub struct OverviewStats {
 #[derive(thiserror::Error, Debug, Serialize)]
 #[serde(tag = "type", content = "data")]
 pub enum AppError {
-    #[error("Database error: {0}")] Db(String),
-    #[error("Invalid arguments: {0}")] Invalid(String),
-    #[error("Internal: {0}")] Internal(String),
+    #[error("Database error: {0}")]
+    Db(String),
+    #[error("Invalid arguments: {0}")]
+    Invalid(String),
+    #[error("Internal: {0}")]
+    Internal(String),
 }
 
 impl From<rusqlite::Error> for AppError {
-    fn from(e: rusqlite::Error) -> Self { Self::Db(e.to_string()) }
+    fn from(e: rusqlite::Error) -> Self {
+        Self::Db(e.to_string())
+    }
 }
 
 pub type AppResult<T> = Result<T, AppError>;
