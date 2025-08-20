@@ -17,8 +17,8 @@ fn get_or_create_connection() -> rusqlite::Result<()> {
 
         let conn = Connection::open(&db_path)?;
         // 基础性能设置
-        conn.pragma_update(None, "journal_mode", &"WAL").ok();
-        conn.pragma_update(None, "synchronous", &"NORMAL").ok();
+        conn.pragma_update(None, "journal_mode", "WAL").ok();
+        conn.pragma_update(None, "synchronous", "NORMAL").ok();
 
         // 仅在使用默认数据库时初始化schema
         if db_path == "history.db" {
@@ -39,8 +39,8 @@ pub fn reset_connection(new_path: &str) -> rusqlite::Result<()> {
 
     // 创建新连接
     let conn = Connection::open(new_path)?;
-    conn.pragma_update(None, "journal_mode", &"WAL").ok();
-    conn.pragma_update(None, "synchronous", &"NORMAL").ok();
+    conn.pragma_update(None, "journal_mode", "WAL").ok();
+    conn.pragma_update(None, "synchronous", "NORMAL").ok();
 
     *conn_guard = Some(conn);
     Ok(())
