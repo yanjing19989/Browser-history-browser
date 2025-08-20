@@ -44,8 +44,14 @@ class ThemeManager {
     }
 
     applyTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        this.currentTheme = theme;
+        // 对于auto模式，根据系统偏好设置实际主题
+        let actualTheme = theme;
+        if (theme === 'auto') {
+            actualTheme = this.systemThemeQuery.matches ? 'dark' : 'light';
+        }
+
+        document.documentElement.setAttribute('data-theme', actualTheme);
+        this.currentTheme = theme; // 保存用户选择的主题（包括auto）
         this.setStoredTheme(theme);
 
         // 更新主题按钮的文本和标题

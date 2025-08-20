@@ -27,8 +27,8 @@
             effectiveTheme = getSystemTheme();
         }
 
-        // 立即设置data-theme属性，避免闪烁
-        document.documentElement.setAttribute('data-theme', storedTheme);
+        // 立即设置data-theme属性为实际主题，避免闪烁
+        document.documentElement.setAttribute('data-theme', effectiveTheme);
 
         // 如果是深色模式，添加一个临时类来确保立即生效
         if (effectiveTheme === 'dark') {

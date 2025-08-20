@@ -25,7 +25,8 @@
         "all": true
       },
       "shell": {
-        "all": false
+        "all": false,
+        "open": true
       }
     },
     "windows": [

@@ -58,10 +58,22 @@
         <table>
           <thead>
             <tr>
-              <th>标题</th>
+              <th>
+                <span class="sortable-header" data-sort="title">
+                  标题 <span class="sort-indicator" id="sort-title"></span>
+                </span>
+              </th>
               <th>URL</th>
-              <th>最后访问</th>
-              <th>次数</th>
+              <th>
+                <span class="sortable-header" data-sort="last_visited_time">
+                  最后访问 <span class="sort-indicator" id="sort-last_visited_time">🔽</span>
+                </span>
+              </th>
+              <th>
+                <span class="sortable-header" data-sort="num_visits">
+                  次数 <span class="sort-indicator" id="sort-num_visits"></span>
+                </span>
+              </th>
             </tr>
           </thead>
           <tbody id="historyTBody"></tbody>
@@ -76,6 +88,11 @@
     <aside class="details" id="detailsPanel">
       <h2>详情</h2>
       <div id="detailContent">选择一条记录查看...</div>
+      <div class="detail-actions" id="detailActions" style="display: none;">
+        <button id="copyTitleBtn" class="detail-btn" title="复制标题">📋 复制标题</button>
+        <button id="copyUrlBtn" class="detail-btn" title="复制链接">🔗 复制链接</button>
+        <button id="openUrlBtn" class="detail-btn" title="打开链接">🌐 打开链接</button>
+      </div>
     </aside>
   </main>
   <script src="theme.js"></script>
