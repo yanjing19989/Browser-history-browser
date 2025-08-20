@@ -5,7 +5,7 @@
     "distDir": "../src",
     "withGlobalTauri": true
   },
-    "package": {
+  "package": {
     "productName": "BrowserHistoryBrowser",
     "version": "0.1.0"
   },
@@ -41,7 +41,7 @@
         "decorations": true,
         "alwaysOnTop": false,
         "skipTaskbar": false,
-        "theme": "Light"
+        "theme": "Dark"
       }
     ],
     "security": {
