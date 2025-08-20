@@ -7,6 +7,8 @@ pub struct HistoryFilters {
     pub keyword: Option<String>,
     pub time_range: Option<String>, // 7d / 30d / 90d / all
     pub locale: Option<String>,
+    pub sort_by: Option<String>, // title, last_visited_time, num_visits
+    pub sort_order: Option<String>, // asc, desc
 }
 
 fn compute_time_lower(bound: &Option<String>) -> Option<i64> {
@@ -41,6 +43,23 @@ fn compute_time_upper(bound: &Option<String>) -> Option<i64> {
         }
         _ => None,
     }
+}
+
+fn build_order_clause(sort_by: &Option<String>, sort_order: &Option<String>) -> String {
+    let sort_field = match sort_by.as_deref() {
+        Some("title") => "title",
+        Some("num_visits") => "num_visits",
+        Some("last_visited_time") | None => "last_visited_time", // 默认按访问时间排序
+        _ => "last_visited_time",
+    };
+    
+    let order = match sort_order.as_deref() {
+        Some("asc") => "ASC",
+        Some("desc") | None => "DESC", // 默认降序
+        _ => "DESC",
+    };
+    
+    format!("ORDER BY {} {}", sort_field, order)
 }
 
 #[tauri::command]
@@ -94,7 +113,11 @@ pub fn list_history(
         format!("WHERE {}", where_clauses.join(" AND "))
     };
 
-    let sql_items = format!("SELECT url, title, last_visited_time, num_visits FROM navigation_history {} ORDER BY last_visited_time DESC LIMIT ?{} OFFSET ?{}", where_sql, param_index, param_index + 1);
+    let order_clause = build_order_clause(&filters.sort_by, &filters.sort_order);
+    let sql_items = format!(
+        "SELECT url, title, last_visited_time, num_visits FROM navigation_history {} {} LIMIT ?{} OFFSET ?{}",
+        where_sql, order_clause, param_index, param_index + 1
+    );
     let sql_count = format!("SELECT COUNT(*) FROM navigation_history {}", where_sql);
 
     let items = with_conn(|conn| {

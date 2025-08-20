@@ -58,10 +58,22 @@
         <table>
           <thead>
             <tr>
-              <th>标题</th>
+              <th>
+                <span class="sortable-header" data-sort="title">
+                  标题 <span class="sort-indicator" id="sort-title"></span>
+                </span>
+              </th>
               <th>URL</th>
-              <th>最后访问</th>
-              <th>次数</th>
+              <th>
+                <span class="sortable-header" data-sort="last_visited_time">
+                  最后访问 <span class="sort-indicator" id="sort-last_visited_time">🔽</span>
+                </span>
+              </th>
+              <th>
+                <span class="sortable-header" data-sort="num_visits">
+                  次数 <span class="sort-indicator" id="sort-num_visits"></span>
+                </span>
+              </th>
             </tr>
           </thead>
           <tbody id="historyTBody"></tbody>
