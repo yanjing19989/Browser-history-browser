@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>浏览历史可视化</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header class="app-header">
+  <h1>浏览历史可视化</h1>
+  <div class="header-actions">
+    <div class="search-bar">
+      <input id="searchInput" type="text" placeholder="搜索标题或URL... (Ctrl+K)" />
+      <button id="searchBtn">搜索</button>
+    </div>
+    <button id="settingsBtn" class="nav-btn" title="设置">⚙️</button>
+  </div>
+</header>
+<main class="layout">
+  <aside class="filters">
+    <h2>过滤</h2>
+    <label>时间范围:
+      <select id="timeRange">
+        <option value="7d">过去7天</option>
+        <option value="30d">过去30天</option>
+        <option value="90d">过去90天</option>
+        <option value="custom">自定义范围</option>
+        <option value="all">全部</option>
+      </select>
+    </label>
+    <div id="customDateRange" class="date-range" style="display: none;">
+      <label>开始日期:
+        <input type="date" id="startDate" />
+      </label>
+      <label>结束日期:
+        <input type="date" id="endDate" />
+      </label>
+    </div>
+    <label>Locale:
+      <input id="localeFilter" placeholder="en-us" />
+    </label>
+    <button id="applyFilters">应用过滤</button>
+  </aside>
+  <section class="content">
+    <section class="kpis" id="kpis">
+      <!-- KPI cards inserted dynamically -->
+    </section>
+    <section class="history-list">
+      <h2>历史记录</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>标题</th>
+            <th>URL</th>
+            <th>最后访问</th>
+            <th>次数</th>
+          </tr>
+        </thead>
+        <tbody id="historyTBody"></tbody>
+      </table>
+      <div class="pagination">
+        <button id="prevPage">上一页</button>
+        <span id="pageInfo"></span>
+        <button id="nextPage">下一页</button>
+      </div>
+    </section>
+  </section>
+  <aside class="details" id="detailsPanel">
+    <h2>详情</h2>
+    <div id="detailContent">选择一条记录查看...</div>
+  </aside>
+</main>
+<script src="main.js"></script>
+</body>
+</html>

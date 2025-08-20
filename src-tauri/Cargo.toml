@@ -1,0 +1,34 @@
+[package]
+name = "browser-history-browser"
+version = "0.1.0"
+description = "A privacy-focused browser history visualization tool"
+authors = ["yanjing19989 <yanjing19981999@126.com>"]
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/yanjing19989/browser-history-browser"
+readme = "../README.md"
+keywords = ["browser", "history", "visualization", "privacy", "tauri"]
+categories = ["gui", "database", "visualization"]
+
+[build-dependencies]
+tauri-build = { version = "1", features = [] }
+
+[dependencies]
+anyhow = "1"
+tauri = { version = "1", features = [ "fs-exists", "path-all", "dialog-open", "fs-read-file"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "1"
+rusqlite = { version = "0.30", features= ["bundled", "unlock_notify", "functions"] }
+once_cell = "1"
+chrono = { version = "0.4", features= ["serde"] }
+
+[features]
+# This feature is used for production builds or when a dev server is not specified, DO NOT REMOVE!!
+custom-protocol = ["tauri/custom-protocol"]
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "z"
+strip = true

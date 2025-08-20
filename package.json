@@ -1,0 +1,22 @@
+{
+  "name": "browser-history-browser",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "build:debug": "tauri build --debug",
+    "lint": "echo 'No linter configured'",
+    "lint:rust": "cd src-tauri && cargo clippy -- -D warnings",
+    "format:rust": "cd src-tauri && cargo fmt",
+    "test": "echo 'No tests yet'",
+    "test:rust": "cd src-tauri && cargo test",
+    "check": "cd src-tauri && cargo check",
+    "clean": "cd src-tauri && cargo clean"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^1.6.0"
+  },
+  "dependencies": {}
+}

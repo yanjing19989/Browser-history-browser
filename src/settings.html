@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>设置 - 浏览历史可视化</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header class="app-header">
+  <div class="header-nav">
+    <button id="backBtn" class="nav-btn">← 返回</button>
+    <h1>设置</h1>
+  </div>
+</header>
+<main class="settings-container">
+  <section class="settings-section">
+    <h2>数据库配置</h2>
+    <div class="setting-item">
+      <label for="dbPath">数据库文件路径:</label>
+      <div class="db-path-input">
+        <input type="text" id="dbPath" placeholder="选择SQLite数据库文件..." readonly />
+        <button id="browseBtn" class="btn btn-secondary">浏览</button>
+      </div>
+      <div class="setting-description">
+        选择包含浏览历史数据的SQLite数据库文件。通常位于浏览器的用户数据目录中。
+      </div>
+    </div>
+    
+    <div class="setting-item">
+      <label>当前状态:</label>
+      <div id="dbStatus" class="status-indicator">
+        <span class="status-text">未配置</span>
+      </div>
+    </div>
+    
+    <div class="setting-actions">
+      <button id="validateBtn" class="btn btn-secondary" disabled>验证路径</button>
+      <button id="applyBtn" class="btn btn-primary" disabled>应用设置</button>
+    </div>
+  </section>
+
+  <section class="settings-section">
+    <h2>使用说明</h2>
+    <div class="help-content">
+      <h3>常见浏览器数据库位置:</h3>
+      <ul>
+        <li><strong>Chrome/Edge:</strong> <code>%LOCALAPPDATA%\Google\Chrome\User Data\Default\History</code></li>
+        <li><strong>Firefox:</strong> <code>%APPDATA%\Mozilla\Firefox\Profiles\[profile]\places.sqlite</code></li>
+        <li><strong>Safari:</strong> <code>~/Library/Safari/History.db</code></li>
+      </ul>
+      <p><strong>注意:</strong> 请在浏览器关闭时复制数据库文件，避免文件锁定问题。</p>
+    </div>
+  </section>
+</main>
+
+<div id="messageToast" class="toast" style="display: none;">
+  <span id="toastMessage"></span>
+</div>
+
+<script src="settings.js"></script>
+</body>
+</html>
