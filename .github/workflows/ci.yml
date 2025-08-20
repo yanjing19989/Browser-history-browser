@@ -5,6 +5,8 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  release:
+    types: [ published ]
 
 env:
   CARGO_TERM_COLOR: always
@@ -59,6 +61,16 @@ jobs:
       with:
         name: windows-build
         path: |
-          src-tauri/target/release/bundle/
-          src-tauri/target/release/*.exe
+          src-tauri/target/release/bundle/**/*.exe
+          src-tauri/target/release/bundle/**/*.msi
+          src-tauri/target/release/BrowserHistoryBrowser.exe
         retention-days: 30
+        if-no-files-found: warn
+
+    - name: Upload to release
+      if: github.event_name == 'release'
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          src-tauri/target/release/bundle/**/*.exe
+          src-tauri/target/release/bundle/**/*.msi

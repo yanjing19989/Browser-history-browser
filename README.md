@@ -92,6 +92,19 @@ invoke('list_history', { page:1, pageSize:20, filters:{ timeRange:'7d' } });
 - **配置管理**：支持自定义数据库路径，通过设置页面进行配置
 - **文件对话框**：提供友好的文件选择界面
 
+## CI/CD
+项目已配置 GitHub Actions 自动化工作流，支持：
+- **自动构建**：在推送到 main 分支和提交 PR 时自动触发
+- **代码质量检查**：
+  - Rust 代码格式检查 (`cargo fmt --check`)
+  - Rust 代码 linting (`cargo clippy`)
+  - Rust 单元测试 (`cargo test`)
+- **Windows 构建**：生成可执行文件和 MSI 安装包
+- **构建产物上传**：将构建结果保存为 artifacts，保留 30 天
+- **自动发布**：创建 release 时自动上传构建产物
+
+工作流配置位于 `.github/workflows/ci.yml`。
+
 ## 后续待办（与 DESIGN 对应）
 - 引入 FTS5 同步触发器
 - 增加更多统计接口：趋势、热力、实体分布
