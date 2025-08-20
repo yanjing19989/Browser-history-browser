@@ -1,47 +1,47 @@
-use once_cell::sync::Lazy;
-use rusqlite::{Connection, params};
-use std::sync::Mutex;
 use crate::config::AppConfig;
+use once_cell::sync::Lazy;
+use rusqlite::{params, Connection};
+use std::sync::Mutex;
 
-static CONN: Lazy<Mutex<Option<Connection>>> = Lazy::new(|| {
-    Mutex::new(None)
-});
+static CONN: Lazy<Mutex<Option<Connection>>> = Lazy::new(|| Mutex::new(None));
 
 fn get_or_create_connection() -> rusqlite::Result<()> {
     let mut conn_guard = CONN.lock().unwrap();
-    
+
     if conn_guard.is_none() {
         // 尝试从配置加载数据库路径
         let config = AppConfig::load().unwrap_or_default();
-        let db_path = config.get_db_path().unwrap_or_else(|| "history.db".to_string());
-        
+        let db_path = config
+            .get_db_path()
+            .unwrap_or_else(|| "history.db".to_string());
+
         let conn = Connection::open(&db_path)?;
         // 基础性能设置
-        conn.pragma_update(None, "journal_mode", &"WAL").ok();
-        conn.pragma_update(None, "synchronous", &"NORMAL").ok();
-        
+        conn.pragma_update(None, "journal_mode", "WAL").ok();
+        conn.pragma_update(None, "synchronous", "NORMAL").ok();
+
         // 仅在使用默认数据库时初始化schema
         if db_path == "history.db" {
             init_schema(&conn)?;
         }
-        
+
         *conn_guard = Some(conn);
     }
-    
+
     Ok(())
 }
 
 pub fn reset_connection(new_path: &str) -> rusqlite::Result<()> {
     let mut conn_guard = CONN.lock().unwrap();
-    
+
     // 关闭现有连接
     *conn_guard = None;
-    
+
     // 创建新连接
     let conn = Connection::open(new_path)?;
-    conn.pragma_update(None, "journal_mode", &"WAL").ok();
-    conn.pragma_update(None, "synchronous", &"NORMAL").ok();
-    
+    conn.pragma_update(None, "journal_mode", "WAL").ok();
+    conn.pragma_update(None, "synchronous", "NORMAL").ok();
+
     *conn_guard = Some(conn);
     Ok(())
 }
@@ -64,14 +64,15 @@ fn init_schema(conn: &Connection) -> rusqlite::Result<()> {
             page_profile TEXT
         );
         CREATE INDEX IF NOT EXISTS idx_nav_last_time ON navigation_history(last_visited_time DESC);
-        "#
+        "#,
     )?;
 
     // 若表为空，插入一些样例数据
     let count: i64 = conn.query_row("SELECT COUNT(*) FROM navigation_history", [], |r| r.get(0))?;
     if count == 0 {
         let now = chrono::Utc::now().timestamp();
-        for i in 0..50 { // 简单样例
+        for i in 0..50 {
+            // 简单样例
             conn.execute(
                 "INSERT OR REPLACE INTO navigation_history(url, id, title, last_visited_time, num_visits, locale) VALUES (?,?,?,?,?,?)",
                 params![
@@ -89,15 +90,17 @@ fn init_schema(conn: &Connection) -> rusqlite::Result<()> {
 }
 
 pub fn with_conn<F, T>(f: F) -> Result<T, rusqlite::Error>
-where F: FnOnce(&Connection) -> Result<T, rusqlite::Error> {
+where
+    F: FnOnce(&Connection) -> Result<T, rusqlite::Error>,
+{
     get_or_create_connection()?;
-    
+
     let guard = CONN.lock().unwrap();
     match guard.as_ref() {
         Some(conn) => f(conn),
         None => Err(rusqlite::Error::SqliteFailure(
             rusqlite::ffi::Error::new(rusqlite::ffi::SQLITE_MISUSE),
-            Some("数据库连接未初始化".to_string())
-        ))
+            Some("数据库连接未初始化".to_string()),
+        )),
     }
 }
