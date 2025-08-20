@@ -2,7 +2,14 @@
 
 ## Project Overview
 
-This is a **Browser History Visualization** desktop application built with Tauri, providing a local, private, and high-performance solution for analyzing browser history data. The application uses a Rust backend with a native JavaScript frontend and SQLite database.
+This is a **Browser History Visualization** desktop application built with Tauri, providing a local, private, and high-performance solution for analyzing browser history data. The application uses a Rust backend with a native JavaScript frontend and SQLite database. It features comprehensive theme management, sortable history lists, detailed item views, and user-friendly interfaces.
+
+Key Features:
+- **Theme System**: Auto/light/dark mode with system preference detection
+- **Interactive History**: Sortable columns with visual indicators
+- **Detail Views**: Comprehensive item information with action buttons
+- **User Feedback**: Toast notifications for all user actions
+- **External Integration**: Open links in default browser
 
 ## Architecture
 
@@ -48,7 +55,7 @@ This is a **Browser History Visualization** desktop application built with Tauri
 
 - **`main.rs`**: Application entry point, Tauri setup, command registration
 - **`commands.rs`**: Tauri command handlers for IPC communication
-  - `list_history`: Paginated history listing with filters
+  - `list_history`: Paginated history listing with filters and sorting support
   - `stats_overview`: Statistics and KPI calculations
   - `get_config`/`set_db_path`: Configuration management
   - `validate_db_path`/`browse_db_file`: Database file operations
@@ -58,12 +65,29 @@ This is a **Browser History Visualization** desktop application built with Tauri
 
 ### Frontend (`src/`)
 
-- **`index.html`**: Main application UI with Chinese/English mixed interface
-- **`main.js`**: JavaScript application logic using Tauri API (`window.__TAURI__.tauri.invoke`)
-- **`settings.html`/`settings.js`**: Settings page for database configuration
-- **`style.css`**: Application styling
+- **`index.html`**: Main application UI with Chinese/English mixed interface, includes theme switcher
+- **`main.js`**: JavaScript application logic using Tauri API (`window.__TAURI__.tauri.invoke`), includes sorting and detail view functionality
+- **`settings.html`/`settings.js`**: Settings page for database configuration, includes theme switcher
+- **`style.css`**: Application styling with dark/light theme support
+- **`theme.js`**: Theme management system with auto/light/dark modes
+- **`theme-init.js`**: Prevents theme flicker by applying theme before page render
 
 ## Key Patterns and Conventions
+
+### Theme Management
+
+1. **Theme System**: Three modes supported: `auto`, `light`, `dark`
+   ```javascript
+   // ThemeManager handles theme switching and persistence
+   window.themeManager.cycleTheme(); // Cycle through themes
+   window.themeManager.isDarkMode(); // Check current effective theme
+   ```
+
+2. **Anti-flicker Strategy**: Theme applied before page render
+   ```javascript
+   // theme-init.js runs synchronously before DOM render
+   // Prevents white flash when loading dark theme
+   ```
 
 ### Rust Code Patterns
 
@@ -103,13 +127,26 @@ This is a **Browser History Visualization** desktop application built with Tauri
    const result = await invoke('command_name', { param: value });
    ```
 
-2. **State Management**: Global state object for UI state
+2. **State Management**: Global state object for UI state with sorting support
    ```javascript
    const state = {
        page: 1,
        pageSize: 20,
+       sortBy: 'last_visited_time',
+       sortOrder: 'desc',
        // other state properties
    };
+   ```
+
+3. **External Link Handling**: Use Tauri shell API for opening links
+   ```javascript
+   const { shell } = window.__TAURI__;
+   await shell.open(url);
+   ```
+
+4. **Toast Notifications**: User feedback system for actions
+   ```javascript
+   showToast('Message', 'info'); // or 'error'
    ```
 
 ## Database Schema
@@ -117,10 +154,12 @@ This is a **Browser History Visualization** desktop application built with Tauri
 The main table is `navigation_history` with these key fields:
 - `url` (TEXT PRIMARY KEY)
 - `title` (TEXT)
-- `last_visited_time` (INTEGER) - Unix timestamp
-- `num_visits` (INTEGER)
+- `last_visited_time` (INTEGER) - Unix timestamp (sortable)
+- `num_visits` (INTEGER) - Visit count (sortable)
 - `locale` (TEXT)
 - Additional metadata fields for future extensions
+
+Sorting is supported on `title`, `last_visited_time`, and `num_visits` fields.
 
 ## Language and Localization
 
@@ -128,6 +167,7 @@ The main table is `navigation_history` with these key fields:
 - **UI Labels**: Primarily Chinese for user-facing text
 - **Code Comments**: Mix of English and Chinese
 - **Error Messages**: Chinese user messages, English technical details
+- **Theme Labels**: Chinese UI with emoji indicators (🌓 自动, ☀️ 浅色, 🌙 深色)
 
 ## Development Practices
 
@@ -136,13 +176,16 @@ The main table is `navigation_history` with these key fields:
 3. **Configuration**: JSON-based configuration with validation
 4. **Testing**: Cargo test support (minimal tests currently)
 5. **Build Scripts**: npm scripts for common development tasks
+6. **Theme Management**: Systematic theme switching with anti-flicker protection
+7. **User Experience**: Interactive sorting, detail views, and toast notifications
 
 ## Important Files to Know
 
-- **Configuration**: `src-tauri/tauri.conf.json` - Tauri app configuration
+- **Configuration**: `src-tauri/tauri.conf.json` - Tauri app configuration (includes theme settings)
 - **Dependencies**: `src-tauri/Cargo.toml` and `package.json`
 - **Documentation**: `DESIGN.md` - Comprehensive design document
 - **Entry Points**: `src-tauri/src/main.rs` and `src/index.html`
+- **Theme System**: `src/theme.js` and `src/theme-init.js` - Complete theme management
 
 ## Common Operations
 
@@ -152,17 +195,24 @@ The main table is `navigation_history` with these key fields:
 2. Add to the handler list in `main.rs`
 3. Call from frontend using `invoke()`
 
+### Theme Management
+
+1. Toggle themes programmatically: `window.themeManager.cycleTheme()`
+2. Check current theme: `window.themeManager.getEffectiveTheme()`
+3. Add theme-aware styling using `data-theme` attribute
+
 ### Database Operations
 
 1. Use `with_conn()` for database access
-2. Follow the existing query patterns
+2. Follow the existing query patterns with sorting support
 3. Handle errors appropriately with `AppError`
 
 ### Frontend State Updates
 
-1. Update the global `state` object
+1. Update the global `state` object (including sort parameters)
 2. Call corresponding fetch functions
 3. Re-render affected UI components
+4. Update sort indicators for table headers
 
 ## Development Environment
 
@@ -175,5 +225,7 @@ The main table is `navigation_history` with these key fields:
 
 - **Rust**: Follow standard Rust conventions with `cargo fmt`
 - **JavaScript**: ES6+ features, async/await patterns
-- **HTML/CSS**: Semantic HTML with CSS Grid/Flexbox layouts
+- **HTML/CSS**: Semantic HTML with CSS Grid/Flexbox layouts, theme-aware styling
 - **Comments**: Document complex business logic and non-obvious code patterns
+- **Theme Classes**: Use CSS custom properties for theme-specific values
+- **User Feedback**: Provide toast notifications for user actions
