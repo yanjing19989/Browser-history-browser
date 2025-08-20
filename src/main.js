@@ -95,7 +95,120 @@ function renderTable(){
 
 function showDetail(item){
   const panel = document.getElementById('detailContent');
-  panel.textContent = JSON.stringify(item, null, 2);
+  const actions = document.getElementById('detailActions');
+  
+  // 格式化显示内容
+  const formatTime = (ts) => {
+    if(!ts || ts === 0) return '-';
+    const d = new Date(ts * 1000);
+    return d.toLocaleString('zh-CN', {
+      year: 'numeric',
+      month: '2-digit', 
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+  };
+  
+  panel.innerHTML = `
+    <div class="detail-item">
+      <strong>标题:</strong><br>
+      <span class="detail-value">${escapeHtml(item.title || '无标题')}</span>
+    </div>
+    <div class="detail-item">
+      <strong>URL:</strong><br>
+      <span class="detail-value detail-url">${escapeHtml(item.url || '')}</span>
+    </div>
+    <div class="detail-item">
+      <strong>最后访问时间:</strong><br>
+      <span class="detail-value">${formatTime(item.last_visited_time)}</span>
+    </div>
+    <div class="detail-item">
+      <strong>访问次数:</strong><br>
+      <span class="detail-value">${item.num_visits || 0}</span>
+    </div>
+  `;
+  
+  // 显示操作按钮
+  actions.style.display = 'flex';
+  
+  // 更新按钮事件处理器
+  updateDetailActions(item);
+}
+
+function updateDetailActions(item) {
+  const copyTitleBtn = document.getElementById('copyTitleBtn');
+  const copyUrlBtn = document.getElementById('copyUrlBtn');
+  const openUrlBtn = document.getElementById('openUrlBtn');
+  
+  // 移除之前的事件监听器
+  copyTitleBtn.replaceWith(copyTitleBtn.cloneNode(true));
+  copyUrlBtn.replaceWith(copyUrlBtn.cloneNode(true));
+  openUrlBtn.replaceWith(openUrlBtn.cloneNode(true));
+  
+  // 重新获取元素引用
+  const newCopyTitleBtn = document.getElementById('copyTitleBtn');
+  const newCopyUrlBtn = document.getElementById('copyUrlBtn');
+  const newOpenUrlBtn = document.getElementById('openUrlBtn');
+  
+  // 复制标题
+  newCopyTitleBtn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(item.title || '');
+      showToast('标题已复制到剪贴板');
+    } catch (err) {
+      console.error('复制失败:', err);
+      showToast('复制失败', 'error');
+    }
+  });
+  
+  // 复制链接
+  newCopyUrlBtn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(item.url || '');
+      showToast('链接已复制到剪贴板');
+    } catch (err) {
+      console.error('复制失败:', err);
+      showToast('复制失败', 'error');
+    }
+  });
+  
+  // 打开链接
+  newOpenUrlBtn.addEventListener('click', async () => {
+    try {
+      // 使用 Tauri API 打开外部链接
+      const { shell } = window.__TAURI__;
+      await shell.open(item.url);
+      showToast('已在默认浏览器中打开链接');
+    } catch (err) {
+      console.error('打开链接失败:', err);
+      showToast('打开链接失败', 'error');
+    }
+  });
+}
+
+function showToast(message, type = 'info') {
+  // 移除已存在的提示
+  const existingToast = document.querySelector('.toast');
+  if (existingToast) {
+    existingToast.remove();
+  }
+  
+  // 创建新的提示
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  
+  // 显示提示
+  setTimeout(() => toast.classList.add('show'), 100);
+  
+  // 3秒后自动隐藏
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
 }
 
 // Helpers
