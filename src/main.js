@@ -95,7 +95,16 @@ function renderTable() {
     tr.addEventListener('click', () => showDetail(item));
     tbody.appendChild(tr);
   });
-  document.getElementById('pageInfo').textContent = `${state.page} / ${Math.max(1, Math.ceil(state.total / state.pageSize))}`;
+  
+  // 更新分页信息
+  const totalPages = Math.max(1, Math.ceil(state.total / state.pageSize));
+  document.getElementById('totalPages').textContent = totalPages;
+  document.getElementById('pageInput').value = state.page;
+  document.getElementById('pageInput').max = totalPages;
+  
+  // 更新按钮状态
+  document.getElementById('prevPage').disabled = state.page <= 1;
+  document.getElementById('nextPage').disabled = state.page >= totalPages;
 
   // 更新排序指示器
   updateSortIndicators();
@@ -300,9 +309,44 @@ document.getElementById('timeRange').addEventListener('change', (e) => {
   }
 });
 
-document.getElementById('prevPage').addEventListener('click', () => { if (state.page > 1) { state.page--; fetchList(); } });
+document.getElementById('prevPage').addEventListener('click', () => { 
+  if (state.page > 1) { 
+    state.page--; 
+    fetchList(); 
+  } 
+});
 
-document.getElementById('nextPage').addEventListener('click', () => { if (state.page < Math.ceil(state.total / state.pageSize)) { state.page++; fetchList(); } });
+document.getElementById('nextPage').addEventListener('click', () => { 
+  const totalPages = Math.ceil(state.total / state.pageSize);
+  if (state.page < totalPages) { 
+    state.page++; 
+    fetchList(); 
+  } 
+});
+
+// 页面输入框跳转功能
+document.getElementById('pageInput').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    const targetPage = parseInt(e.target.value);
+    const totalPages = Math.ceil(state.total / state.pageSize);
+    if (targetPage >= 1 && targetPage <= totalPages && targetPage !== state.page) {
+      state.page = targetPage;
+      fetchList();
+    }
+  }
+});
+
+document.getElementById('pageInput').addEventListener('blur', (e) => {
+  const targetPage = parseInt(e.target.value);
+  const totalPages = Math.ceil(state.total / state.pageSize);
+  if (targetPage >= 1 && targetPage <= totalPages && targetPage !== state.page) {
+    state.page = targetPage;
+    fetchList();
+  } else {
+    // 如果输入无效，恢复当前页码
+    e.target.value = state.page;
+  }
+});
 
 document.getElementById('settingsBtn').addEventListener('click', () => { window.location.href = 'settings.html'; });
 
