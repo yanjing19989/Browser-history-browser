@@ -4,10 +4,12 @@
 
 ## 功能亮点
 - 时间维度：按天/周访问趋势（后端接口预留）
-- 列表浏览 + 简单过滤（时间范围、关键字、locale）
+- 列表浏览 + 多维过滤（时间范围、关键字、locale）+ 排序功能
 - 全文搜索（后续接入 FTS5）
 - 实体 / 品类 分布分析（接口预留）
 - 图表联动（待接入图表库）
+- **主题切换**：支持自动/浅色/深色三种模式，跟随系统偏好
+- **详细信息面板**：点击条目查看详情，支持复制标题/链接、在浏览器中打开
 - 国际化（预留）
 - 本地隐私：数据不外发
 
@@ -54,6 +56,8 @@ root
  │   ├─ settings.html          # 设置页面
  │   ├─ settings.js            # 设置页面逻辑
  │   ├─ style.css              # 应用样式
+ │   ├─ theme.js               # 主题管理系统
+ │   ├─ theme-init.js          # 主题初始化脚本
  │   └─ favicon.ico            # 应用图标
  ├─ src-tauri/
  │   ├─ src/                   # Rust 源码
@@ -72,7 +76,7 @@ root
 ## 已实现 IPC 命令
 | 命令 | 描述 |
 |------|------|
-| list_history | 分页 + 过滤（keyword、timeRange、locale）获取历史记录，返回 items/total |
+| list_history | 分页 + 过滤（keyword、timeRange、locale）+ 排序（sort_by、sort_order）获取历史记录，返回 items/total |
 | stats_overview | KPI：总访问次数、唯一站点数、Top 实体占位 |
 | get_config | 获取应用配置信息 |
 | set_db_path | 设置数据库文件路径 |
@@ -82,15 +86,30 @@ root
 前端在 `main.js` 中通过：
 ```js
 const { invoke } = window.__TAURI__.tauri;
+// 基础查询
 invoke('list_history', { page:1, pageSize:20, filters:{ timeRange:'7d' } });
+// 带排序的查询
+invoke('list_history', { 
+  page:1, 
+  pageSize:20, 
+  filters:{ 
+    timeRange:'7d',
+    sort_by: 'last_visited_time',
+    sort_order: 'desc'
+  } 
+});
 ```
 
 ## 功能特性
 - **历史浏览**：支持分页浏览历史记录，按时间降序排列
 - **多维过滤**：按关键字、时间范围、locale 过滤历史记录
+- **排序功能**：支持按标题、最后访问时间、访问次数排序，可切换升序/降序
 - **统计概览**：显示总访问次数、唯一站点数和热门实体
+- **详细信息**：点击历史记录查看详情，支持复制标题/链接、在默认浏览器中打开
+- **主题管理**：自动/浅色/深色三种主题模式，支持跟随系统偏好，防闪烁加载
 - **配置管理**：支持自定义数据库路径，通过设置页面进行配置
 - **文件对话框**：提供友好的文件选择界面
+- **用户反馈**：操作完成后显示提示信息
 
 ## CI/CD
 项目已配置 GitHub Actions 自动化工作流，支持：
@@ -109,11 +128,9 @@ invoke('list_history', { page:1, pageSize:20, filters:{ timeRange:'7d' } });
 - 引入 FTS5 同步触发器
 - 增加更多统计接口：趋势、热力、实体分布
 - UI：时间轴、图表组件（可选 ECharts 静态版）
-- 国际化与主题切换
+- 国际化与更多主题选项
 - 安全：主密码与配置加密
-
-## 注意
-当前 `db.rs` 会在本地生成 `history.db` 并写入 50 条示例数据。如需连接真实库，可修改路径或移除样例插入逻辑。
+- 键盘快捷键增强（当前支持 Ctrl+K 聚焦搜索）
 
 ## 许可证
-MIT（可调整）。
+MIT
