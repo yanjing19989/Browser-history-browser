@@ -20,7 +20,7 @@ impl Default for AppConfig {
 
 impl AppConfig {
     fn config_file_path() -> Result<PathBuf> {
-        let app_dir = tauri::api::path::app_config_dir(&tauri::generate_context!().config())
+        let app_dir = tauri::api::path::app_config_dir(tauri::generate_context!().config())
             .ok_or_else(|| anyhow::anyhow!("无法获取应用配置目录"))?;
 
         if !app_dir.exists() {
