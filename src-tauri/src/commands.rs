@@ -179,7 +179,7 @@ pub fn stats_overview(time_range: Option<String>) -> AppResult<OverviewStats> {
             "SELECT SUM(num_visits) FROM navigation_history {}",
             where_sql
         );
-        let distinct_sql = format!("SELECT COUNT(*) FROM (SELECT substr(url,1, instr(url,'/',9)-1) AS host FROM navigation_history {} GROUP BY host)", where_sql);
+        let distinct_sql = format!("SELECT COUNT(*) FROM (SELECT CASE WHEN instr(substr(url, 9), '/') > 0 THEN substr(url, 1, instr(substr(url, 9), '/') + 7) ELSE url END AS host FROM navigation_history {} GROUP BY host)", where_sql);
 
         let total: i64 = if params.is_empty() {
             conn.query_row(&total_sql, [], |r| r.get::<_, Option<i64>>(0))?
@@ -204,17 +204,36 @@ pub fn stats_overview(time_range: Option<String>) -> AppResult<OverviewStats> {
         Ok::<_, rusqlite::Error>((total, distinct))
     })?;
 
-    // Top entities
+    // Top entities - 改为返回站点名称
     let top_entities: Vec<String> = with_conn(|conn| {
-        let entity_where = if where_clauses.is_empty() {
-            "WHERE product_entity_id IS NOT NULL".to_string()
-        } else {
-            format!("{} AND product_entity_id IS NOT NULL", where_sql)
-        };
+        // 提取站点域名并按访问次数排序
+        let site_sql = format!(
+            "SELECT 
+                CASE 
+                    WHEN url LIKE 'http://%' THEN 
+                        CASE 
+                            WHEN instr(substr(url, 8), '/') > 0 
+                            THEN substr(url, 8, instr(substr(url, 8), '/') - 1)
+                            ELSE substr(url, 8)
+                        END
+                    WHEN url LIKE 'https://%' THEN 
+                        CASE 
+                            WHEN instr(substr(url, 9), '/') > 0 
+                            THEN substr(url, 9, instr(substr(url, 9), '/') - 1)
+                            ELSE substr(url, 9)
+                        END
+                    ELSE url
+                END as site_name,
+                SUM(num_visits) as total_visits 
+            FROM navigation_history 
+            {} 
+            GROUP BY site_name 
+            ORDER BY total_visits DESC 
+            LIMIT 6",
+            where_sql
+        );
 
-        let entity_sql = format!("SELECT product_entity_id, SUM(num_visits) v FROM navigation_history {} GROUP BY product_entity_id ORDER BY v DESC LIMIT 5", entity_where);
-
-        let mut stmt = conn.prepare(&entity_sql)?;
+        let mut stmt = conn.prepare(&site_sql)?;
         let mut rows = if params.is_empty() {
             stmt.query([])?
         } else {
@@ -223,9 +242,9 @@ pub fn stats_overview(time_range: Option<String>) -> AppResult<OverviewStats> {
 
         let mut acc = Vec::new();
         while let Some(row) = rows.next()? {
-            let id: Option<String> = row.get(0)?;
-            if let Some(s) = id {
-                acc.push(s);
+            let site_name: String = row.get(0)?;
+            if !site_name.is_empty() {
+                acc.push(site_name);
             }
         }
         Ok::<_, rusqlite::Error>(acc)
