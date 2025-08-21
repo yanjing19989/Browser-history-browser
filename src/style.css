@@ -13,7 +13,7 @@
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.2);
   --shadow-glass: 0 8px 32px rgba(31, 38, 135, 0.37);
   --hover-bg: rgba(96, 165, 250, 0.1);
-  --table-border: rgba(229, 231, 235, 0.3);
+  --table-border: rgba(175, 185, 199, 0.3);
   --input-bg: rgba(255, 255, 255, 0.8);
   --status-ok-bg: rgba(209, 250, 229, 0.8);
   --status-ok-text: #065f46;
@@ -385,7 +385,7 @@ body {
 }
 
 .top-sites {
-  border-top: 1px solid var(--border-glass);
+  border-top: 1px solid var(--table-border);
   padding-top: 0.5rem;
 }
 
@@ -404,7 +404,7 @@ body {
   padding: 0.5rem 0.75rem;
   background: var(--bg-glass);
   backdrop-filter: blur(10px);
-  border: 1px solid var(--border-glass);
+  border: 1px solid var(--table-border);
   border-radius: var(--border-radius-md);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-size: 0.85rem;
@@ -716,7 +716,7 @@ body {
   gap: 0.5rem;
   margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid var(--border-glass);
+  border-top: 1px solid var(--table-border);
 }
 
 .detail-btn {
@@ -854,13 +854,8 @@ body {
 
 /* 选择文本样式 */
 ::selection {
-  background: var(--accent-primary);
-  color: #fff;
-}
-
-::-moz-selection {
-  background: var(--accent-primary);
-  color: #fff;
+  background: var(--hover-bg);
+  color: var(--text-primary);
 }
 
 /* 设置页面样式 */
