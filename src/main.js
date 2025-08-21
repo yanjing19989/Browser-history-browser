@@ -337,6 +337,7 @@ document.getElementById('applyFilters').addEventListener('click', () => {
   state.page = 1;
   fetchStats();
   fetchList();
+  showToast('已应用过滤器', 'success');
 });
 
 // 时间范围切换事件
