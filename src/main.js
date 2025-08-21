@@ -73,17 +73,64 @@ async function fetchList() {
 function renderKpis(stats) {
   const kpis = document.getElementById('kpis');
   kpis.innerHTML = '';
-  const data = [
+
+  // 创建统一的大卡片
+  const card = document.createElement('div');
+  card.className = 'kpi-card';
+
+  // KPI数据部分
+  const kpiSection = document.createElement('div');
+  kpiSection.className = 'kpi-section';
+
+  const kpiData = [
     { label: '总访问次数', value: stats.total_visits || 0 },
-    { label: '唯一站点', value: stats.distinct_sites || 0 },
-    { label: 'Top实体数', value: (stats.top_entities || []).length }
+    { label: '站点总数', value: stats.distinct_sites || 0 }
   ];
-  data.forEach(k => {
-    const div = document.createElement('div');
-    div.className = 'kpi-card';
-    div.innerHTML = `<h3>${k.label}</h3><div class="value">${k.value}</div>`;
-    kpis.appendChild(div);
+
+  kpiData.forEach(k => {
+    const item = document.createElement('div');
+    item.className = 'kpi-item';
+    item.innerHTML = `<h3>${k.label}</h3><div class="value">${k.value}</div>`;
+    kpiSection.appendChild(item);
   });
+
+  card.appendChild(kpiSection);
+
+  // TOP站点部分
+  if (stats.top_entities && stats.top_entities.length > 0) {
+    const topSites = document.createElement('div');
+    topSites.className = 'top-sites';
+
+    const title = document.createElement('h3');
+    title.textContent = 'TOP 站点';
+    topSites.appendChild(title);
+
+    const siteList = document.createElement('ul');
+    siteList.className = 'site-list';
+
+    stats.top_entities.forEach((siteName, index) => {
+      const listItem = document.createElement('li');
+      listItem.className = 'site-item';
+
+      const rank = document.createElement('span');
+      rank.className = 'site-rank';
+      rank.textContent = index + 1;
+
+      const name = document.createElement('span');
+      name.className = 'site-name';
+      name.textContent = siteName;
+      name.title = siteName; // 添加tooltip显示完整名称
+
+      listItem.appendChild(rank);
+      listItem.appendChild(name);
+      siteList.appendChild(listItem);
+    });
+
+    topSites.appendChild(siteList);
+    card.appendChild(topSites);
+  }
+
+  kpis.appendChild(card);
 }
 
 function renderTable() {
@@ -95,13 +142,13 @@ function renderTable() {
     tr.addEventListener('click', () => showDetail(item));
     tbody.appendChild(tr);
   });
-  
+
   // 更新分页信息
   const totalPages = Math.max(1, Math.ceil(state.total / state.pageSize));
   document.getElementById('totalPages').textContent = totalPages;
   document.getElementById('pageInput').value = state.page;
   document.getElementById('pageInput').max = totalPages;
-  
+
   // 更新按钮状态
   document.getElementById('prevPage').disabled = state.page <= 1;
   document.getElementById('nextPage').disabled = state.page >= totalPages;
@@ -309,19 +356,19 @@ document.getElementById('timeRange').addEventListener('change', (e) => {
   }
 });
 
-document.getElementById('prevPage').addEventListener('click', () => { 
-  if (state.page > 1) { 
-    state.page--; 
-    fetchList(); 
-  } 
+document.getElementById('prevPage').addEventListener('click', () => {
+  if (state.page > 1) {
+    state.page--;
+    fetchList();
+  }
 });
 
-document.getElementById('nextPage').addEventListener('click', () => { 
+document.getElementById('nextPage').addEventListener('click', () => {
   const totalPages = Math.ceil(state.total / state.pageSize);
-  if (state.page < totalPages) { 
-    state.page++; 
-    fetchList(); 
-  } 
+  if (state.page < totalPages) {
+    state.page++;
+    fetchList();
+  }
 });
 
 // 页面输入框跳转功能
