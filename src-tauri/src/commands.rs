@@ -299,3 +299,148 @@ pub fn browse_db_file() -> AppResult<Option<String>> {
 
     Ok(file_path.map(|p| p.to_string_lossy().to_string()))
 }
+
+#[tauri::command]
+pub fn browse_browser_db_file() -> AppResult<Option<String>> {
+    use tauri::api::dialog::blocking::FileDialogBuilder;
+
+    let file_path = FileDialogBuilder::new()
+        .add_filter("SQLite数据库", &["db", "sqlite", "sqlite3"])
+        .add_filter("Chrome/Edge数据库", &["*"])
+        .add_filter("Firefox数据库", &["sqlite"])
+        .add_filter("所有文件", &["*"])
+        .set_title("选择浏览器历史数据库文件")
+        .pick_file();
+
+    Ok(file_path.map(|p| p.to_string_lossy().to_string()))
+}
+
+#[tauri::command]
+pub fn copy_browser_db_to_app(source_path: String) -> AppResult<String> {
+    use std::fs;
+    use std::path::Path;
+
+    if !Path::new(&source_path).exists() {
+        return Err(AppError::Invalid("源数据库文件不存在".to_string()));
+    }
+
+    let app_dir = AppConfig::get_app_dir().map_err(|e| AppError::Internal(e.to_string()))?;
+    fs::create_dir_all(&app_dir).map_err(|e| AppError::Internal(format!("创建应用目录失败: {}", e)))?;
+
+    // 生成目标文件名 (带时间戳的history.db)
+    let timestamp = chrono::Local::now().format("%Y%m%d_%H%M%S");
+    let target_filename = format!("history_{}.db", timestamp);
+    let target_path = app_dir.join(&target_filename);
+
+    fs::copy(&source_path, &target_path)
+        .map_err(|e| AppError::Internal(format!("复制数据库文件失败: {}", e)))?;
+
+    AppConfig::validate_db_path(&target_path.to_string_lossy().to_string())
+        .map_err(|e| AppError::Invalid(format!("复制的数据库文件无效: {}", e)))?;
+
+    Ok(target_path.to_string_lossy().to_string())
+}
+
+#[tauri::command]
+pub fn set_browser_db_path(path: String) -> AppResult<String> {
+    // 验证路径
+    if !std::path::Path::new(&path).exists() {
+        return Err(AppError::Invalid("浏览器数据库文件不存在".to_string()));
+    }
+
+    // 加载配置并设置浏览器数据库路径
+    let mut config = AppConfig::load().map_err(|e| AppError::Internal(e.to_string()))?;
+
+    config
+        .set_browser_db_path(path)
+        .map_err(|e| AppError::Internal(e.to_string()))?;
+
+    Ok("浏览器数据库路径保存成功".to_string())
+}
+
+#[tauri::command]
+pub fn open_db_directory() -> AppResult<String> {
+    let config = AppConfig::load().map_err(|e| AppError::Internal(e.to_string()))?;
+
+    let db_path = config.get_db_path()
+        .ok_or_else(|| AppError::Invalid("未配置数据库路径".to_string()))?;
+
+    let path = std::path::Path::new(&db_path);
+    let parent_dir = path.parent()
+        .ok_or_else(|| AppError::Invalid("无法获取数据库文件所在目录".to_string()))?;
+
+    // 使用系统默认程序打开目录
+    #[cfg(target_os = "windows")]
+    {
+        std::process::Command::new("explorer")
+            .arg(parent_dir)
+            .spawn()
+            .map_err(|e| AppError::Internal(format!("打开目录失败: {}", e)))?;
+    }
+
+    #[cfg(target_os = "macos")]
+    {
+        std::process::Command::new("open")
+            .arg(parent_dir)
+            .spawn()
+            .map_err(|e| AppError::Internal(format!("打开目录失败: {}", e)))?;
+    }
+
+    #[cfg(target_os = "linux")]
+    {
+        std::process::Command::new("xdg-open")
+            .arg(parent_dir)
+            .spawn()
+            .map_err(|e| AppError::Internal(format!("打开目录失败: {}", e)))?;
+    }
+
+    Ok("目录已打开".to_string())
+}
+
+#[tauri::command]
+pub fn cleanup_old_dbs() -> AppResult<String> {
+    use std::fs;
+    use std::path::Path;
+
+    let config = AppConfig::load().map_err(|e| AppError::Internal(e.to_string()))?;
+
+    let db_path = config.get_db_path()
+        .ok_or_else(|| AppError::Invalid("未配置数据库路径".to_string()))?;
+
+    let current_db = Path::new(&db_path);
+    let parent_dir = current_db.parent()
+        .ok_or_else(|| AppError::Invalid("无法获取数据库文件所在目录".to_string()))?;
+
+    let current_filename = current_db.file_name()
+        .ok_or_else(|| AppError::Invalid("无法获取当前数据库文件名".to_string()))?;
+
+    // 读取目录中的所有文件
+    let entries = fs::read_dir(parent_dir)
+        .map_err(|e| AppError::Internal(format!("读取目录失败: {}", e)))?;
+
+    let mut deleted_count = 0;
+
+    for entry in entries {
+        let entry = entry.map_err(|e| AppError::Internal(format!("读取目录项失败: {}", e)))?;
+        let entry_path = entry.path();
+
+        // 检查是否是.db文件
+        if let Some(extension) = entry_path.extension() {
+            if extension == "db" {
+                // 检查是否是当前使用的数据库文件
+                if let Some(file_name) = entry_path.file_name() {
+                    if file_name != current_filename {
+                        // 删除其他.db文件
+                        if let Err(e) = fs::remove_file(&entry_path) {
+                            eprintln!("删除文件失败 {:?}: {}", entry_path, e);
+                        } else {
+                            deleted_count += 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    Ok(format!("已清理 {} 个旧数据库文件", deleted_count))
+}

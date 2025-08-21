@@ -21,7 +21,6 @@
   --status-error-text: #991b1b;
   --status-warning-bg: rgba(254, 243, 199, 0.8);
   --status-warning-text: #92400e;
-  --blur-filter: blur(10px);
   --border-radius-sm: 8px;
   --border-radius-md: 12px;
   --border-radius-lg: 16px;
@@ -69,7 +68,6 @@ body {
   background: var(--bg-primary);
   color: var(--text-primary);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: var(--blur-filter);
   min-height: 100vh;
 }
 
@@ -754,7 +752,7 @@ body {
 
 .toast {
   position: fixed;
-  bottom: 30px;
+  top: 30px;
   right: 30px;
   background: var(--bg-glass);
   backdrop-filter: blur(20px);
@@ -784,6 +782,12 @@ body {
   border-left: 4px solid #ef4444;
   background: var(--status-error-bg);
   color: var(--status-error-text);
+}
+
+.toast-success {
+  border-left: 4px solid #10b981;
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
 }
 
 @media (max-width: 1200px) {
@@ -895,7 +899,7 @@ body {
 .settings-section {
   background: var(--bg-glass);
   backdrop-filter: blur(20px);
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   padding: 2rem;
   border-radius: var(--border-radius-xl);
   border: 1px solid var(--border-glass);
@@ -1106,4 +1110,99 @@ html {
 [data-theme="dark"] ::-webkit-scrollbar-track {
   background: rgba(31, 41, 55, 0.4);
   border: 0;
+}
+
+/* 复制路径按钮样式 */
+.copy-path-btn {
+  margin-left: 8px;
+  padding: 4px 8px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: 4px;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+}
+
+.copy-path-btn:hover {
+  background: var(--accent-secondary);
+  transform: translateY(-1px);
+}
+
+.copy-path-btn:active {
+  transform: translateY(0);
+}
+
+/* 浏览器同步区域样式 */
+.browser-sync-section {
+  margin-top: 1rem;
+}
+
+.sync-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
+  padding: 1rem;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--border-radius-md);
+  backdrop-filter: blur(10px);
+}
+
+.sync-description {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+/* 帮助内容列表项样式优化 */
+.help-content li {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.help-content li strong {
+  min-width: 80px;
+  margin-right: 8px;
+}
+
+.help-content li code {
+  flex: 1;
+  margin-right: 8px;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .copy-path-btn {
+    margin-left: 4px;
+    padding: 2px 4px;
+    font-size: 10px;
+  }
+
+  .sync-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .help-content li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .help-content li strong {
+    min-width: auto;
+    margin-bottom: 4px;
+  }
+
+  .help-content li code {
+    margin-bottom: 4px;
+  }
 }
