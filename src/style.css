@@ -1,15 +1,9 @@
 /* CSS变量定义 - 浅色主题 */
 :root {
   --bg-primary: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  --bg-secondary: rgba(255, 255, 255, 0.8);
-  --bg-tertiary: rgba(249, 250, 251, 0.6);
   --bg-glass: rgba(255, 255, 255, 0.25);
-  --bg-blur: rgba(255, 255, 255, 0.1);
   --text-primary: #1f2937;
   --text-secondary: #374151;
-  --text-muted: #6b7280;
-  --border-color: rgba(229, 231, 235, 0.3);
-  --border-light: rgba(209, 213, 219, 0.5);
   --border-glass: rgba(255, 255, 255, 0.2);
   --accent-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   --accent-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
@@ -21,7 +15,6 @@
   --hover-bg: rgba(96, 165, 250, 0.1);
   --table-border: rgba(229, 231, 235, 0.3);
   --input-bg: rgba(255, 255, 255, 0.8);
-  --input-border: rgba(147, 197, 253, 0.5);
   --status-ok-bg: rgba(209, 250, 229, 0.8);
   --status-ok-text: #065f46;
   --status-error-bg: rgba(254, 226, 226, 0.8);
@@ -44,15 +37,9 @@
 /* 深色主题变量 */
 [data-theme="dark"] {
   --bg-primary: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  --bg-secondary: rgba(31, 41, 55, 0.8);
-  --bg-tertiary: rgba(55, 65, 81, 0.6);
   --bg-glass: rgba(31, 41, 55, 0.25);
-  --bg-blur: rgba(31, 41, 55, 0.1);
   --text-primary: #f9fafb;
   --text-secondary: #e5e7eb;
-  --text-muted: #9ca3af;
-  --border-color: rgba(55, 65, 81, 0.3);
-  --border-light: rgba(75, 85, 99, 0.5);
   --border-glass: rgba(255, 255, 255, 0.1);
   --accent-primary: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
   --accent-secondary: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
@@ -64,7 +51,6 @@
   --hover-bg: rgba(59, 130, 246, 0.1);
   --table-border: rgba(75, 85, 99, 0.3);
   --input-bg: rgba(55, 65, 81, 0.8);
-  --input-border: rgba(75, 85, 99, 0.5);
   --status-ok-bg: rgba(6, 78, 59, 0.8);
   --status-ok-text: #6ee7b7;
   --status-error-bg: rgba(127, 29, 29, 0.8);
@@ -72,8 +58,6 @@
   --status-warning-bg: rgba(120, 53, 15, 0.8);
   --status-warning-text: #fbbf24;
 }
-
-
 
 * {
   box-sizing: border-box;
@@ -241,11 +225,16 @@ body {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
   background-repeat: no-repeat;
   background-position: right 0.75rem center;
   background-size: 1rem;
   padding-right: 2.5rem;
+}
+
+/* 深色主题下拉箭头 */
+[data-theme="dark"] .filters select {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e5e7eb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
 }
 
 .filters select option {
@@ -254,24 +243,9 @@ body {
   padding: 0.5rem;
 }
 
-/* 深色主题下拉选择框样式优化 */
-[data-theme="dark"] .filters select {
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e5e7eb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
-}
-
 [data-theme="dark"] .filters select option {
-  background: #374151;
-  color: #f9fafb;
-}
-
-/* 浅色主题下拉选择框样式优化 */
-:root .filters select {
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
-}
-
-:root .filters select option {
-  background: rgba(255, 255, 255, 0.9);
-  color: #1f2937;
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
 }
 
 .filters input:focus,
@@ -331,28 +305,21 @@ body {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-/* 日期输入框的日历图标样式 */
-.date-range input[type="date"]::-webkit-calendar-picker-indicator {
-  background: transparent;
-  bottom: 0;
-  color: transparent;
-  cursor: pointer;
-  height: auto;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: auto;
+/* 应用深色主题到日历组件 */
+[data-theme="dark"] input[type="date"] {
+  color-scheme: dark !important;
+  background-color: var(--input-bg) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-glass) !important;
 }
 
-/* 深色主题日期输入框优化 */
-[data-theme="dark"] .date-range input[type="date"] {
-  color-scheme: dark;
-}
-
-/* 浅色主题日期输入框优化 */
-:root .date-range input[type="date"] {
-  color-scheme: light;
+/* Firefox 日期输入框深色主题支持 */
+@-moz-document url-prefix() {
+  [data-theme="dark"] input[type="date"] {
+    color-scheme: dark;
+    background-color: var(--input-bg);
+    color: var(--text-primary);
+  }
 }
 
 .content {
@@ -573,7 +540,7 @@ body {
 .pagination button:disabled {
   opacity: 0.4;
   cursor: not-allowed;
-  background: var(--bg-tertiary);
+  background: var(--border-glass);
   backdrop-filter: blur(5px);
 }
 
@@ -695,7 +662,7 @@ body {
   gap: 0.5rem;
   margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid var(--border-glass);
 }
 
 .detail-btn {
@@ -945,7 +912,7 @@ body {
 
 .setting-description {
   font-size: 0.8rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   margin-top: 0.5rem;
   line-height: 1.4;
 }
@@ -1040,7 +1007,7 @@ body {
 }
 
 .help-content code {
-  background: var(--bg-tertiary);
+  background: var(--border-glass);
   padding: 0.2rem 0.4rem;
   border-radius: 3px;
   font-size: 0.8rem;
@@ -1054,8 +1021,8 @@ body {
 /* 滚动条样式 */
 /* Webkit浏览器滚动条 */
 ::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -1063,18 +1030,18 @@ body {
   backdrop-filter: blur(10px);
   border-radius: var(--border-radius-md);
   border: 1px solid var(--border-glass);
+  margin: 10px 0;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--accent-primary);
+  background: #9ca3af;
   border-radius: var(--border-radius-md);
   border: 2px solid transparent;
   background-clip: content-box;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-hover);
+  background: #6b7280;
   border-width: 1px;
 }
 
@@ -1091,13 +1058,16 @@ html {
 
 /* 深色模式滚动条增强 */
 [data-theme="dark"] ::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  background: #4b5563;
+  border: 2px solid transparent;
+  background-clip: content-box;
 }
 
 [data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  background: #6b7280;
 }
 
 [data-theme="dark"] ::-webkit-scrollbar-track {
   background: rgba(31, 41, 55, 0.4);
+  border: 0;
 }
