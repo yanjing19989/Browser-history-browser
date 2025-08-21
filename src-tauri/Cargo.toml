@@ -1,6 +1,6 @@
 [package]
 name = "browser-history-browser"
-version = "0.1.0"
+version = "1.0.0"
 description = "A browser history visualization tool"
 authors = ["yanjing19989 <yanjing19981999@126.com>"]
 edition = "2021"
