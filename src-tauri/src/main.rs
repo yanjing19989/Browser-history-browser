@@ -7,7 +7,9 @@ mod db;
 mod domain;
 
 use commands::{
-    browse_db_file, browse_browser_db_file, copy_browser_db_to_app, get_config, list_history, set_db_path, set_browser_db_path, open_db_directory, cleanup_old_dbs, stats_overview, validate_db_path,
+    browse_browser_db_file, browse_db_file, cleanup_old_dbs, copy_browser_db_to_app, get_config,
+    list_history, open_db_directory, set_browser_db_path, set_db_path, stats_overview,
+    validate_db_path,
 };
 
 fn main() {

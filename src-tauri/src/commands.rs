@@ -325,7 +325,8 @@ pub fn copy_browser_db_to_app(source_path: String) -> AppResult<String> {
     }
 
     let app_dir = AppConfig::get_app_dir().map_err(|e| AppError::Internal(e.to_string()))?;
-    fs::create_dir_all(&app_dir).map_err(|e| AppError::Internal(format!("创建应用目录失败: {}", e)))?;
+    fs::create_dir_all(&app_dir)
+        .map_err(|e| AppError::Internal(format!("创建应用目录失败: {}", e)))?;
 
     // 生成目标文件名 (带时间戳的history.db)
     let timestamp = chrono::Local::now().format("%Y%m%d_%H%M%S");
@@ -335,7 +336,7 @@ pub fn copy_browser_db_to_app(source_path: String) -> AppResult<String> {
     fs::copy(&source_path, &target_path)
         .map_err(|e| AppError::Internal(format!("复制数据库文件失败: {}", e)))?;
 
-    AppConfig::validate_db_path(&target_path.to_string_lossy().to_string())
+    AppConfig::validate_db_path(target_path.to_string_lossy().as_ref())
         .map_err(|e| AppError::Invalid(format!("复制的数据库文件无效: {}", e)))?;
 
     Ok(target_path.to_string_lossy().to_string())
@@ -362,11 +363,13 @@ pub fn set_browser_db_path(path: String) -> AppResult<String> {
 pub fn open_db_directory() -> AppResult<String> {
     let config = AppConfig::load().map_err(|e| AppError::Internal(e.to_string()))?;
 
-    let db_path = config.get_db_path()
+    let db_path = config
+        .get_db_path()
         .ok_or_else(|| AppError::Invalid("未配置数据库路径".to_string()))?;
 
     let path = std::path::Path::new(&db_path);
-    let parent_dir = path.parent()
+    let parent_dir = path
+        .parent()
         .ok_or_else(|| AppError::Invalid("无法获取数据库文件所在目录".to_string()))?;
 
     // 使用系统默认程序打开目录
@@ -404,19 +407,22 @@ pub fn cleanup_old_dbs() -> AppResult<String> {
 
     let config = AppConfig::load().map_err(|e| AppError::Internal(e.to_string()))?;
 
-    let db_path = config.get_db_path()
+    let db_path = config
+        .get_db_path()
         .ok_or_else(|| AppError::Invalid("未配置数据库路径".to_string()))?;
 
     let current_db = Path::new(&db_path);
-    let parent_dir = current_db.parent()
+    let parent_dir = current_db
+        .parent()
         .ok_or_else(|| AppError::Invalid("无法获取数据库文件所在目录".to_string()))?;
 
-    let current_filename = current_db.file_name()
+    let current_filename = current_db
+        .file_name()
         .ok_or_else(|| AppError::Invalid("无法获取当前数据库文件名".to_string()))?;
 
     // 读取目录中的所有文件
-    let entries = fs::read_dir(parent_dir)
-        .map_err(|e| AppError::Internal(format!("读取目录失败: {}", e)))?;
+    let entries =
+        fs::read_dir(parent_dir).map_err(|e| AppError::Internal(format!("读取目录失败: {}", e)))?;
 
     let mut deleted_count = 0;
 
