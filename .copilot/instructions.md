@@ -6,10 +6,13 @@ This is a **Browser History Visualization** desktop application built with Tauri
 
 Key Features:
 - **Theme System**: Auto/light/dark mode with system preference detection
-- **Interactive History**: Sortable columns with visual indicators
+- **Interactive History**: Sortable columns with visual indicators, enhanced pagination with direct page navigation
 - **Detail Views**: Comprehensive item information with action buttons
 - **User Feedback**: Toast notifications for all user actions
 - **External Integration**: Open links in default browser
+- **Browser Database Sync**: Import and manage browser history databases from Chrome, Edge, Firefox, and Safari
+- **Modern UI**: Glass morphism effects, semi-transparent backgrounds, rounded corners, and enhanced visual styling
+- **Statistics Dashboard**: Unified KPI cards with top visited sites ranking and improved metrics calculation
 
 ## Architecture
 
@@ -56,19 +59,24 @@ Key Features:
 - **`main.rs`**: Application entry point, Tauri setup, command registration
 - **`commands.rs`**: Tauri command handlers for IPC communication
   - `list_history`: Paginated history listing with filters and sorting support
-  - `stats_overview`: Statistics and KPI calculations
+  - `stats_overview`: Statistics and KPI calculations with improved site domain extraction
   - `get_config`/`set_db_path`: Configuration management
   - `validate_db_path`/`browse_db_file`: Database file operations
+  - `browse_browser_db_file`: Open file dialog for browser database selection
+  - `copy_browser_db_to_app`: Copy browser database to application data directory
+  - `set_browser_db_path`: Set browser database as application data source
+  - `open_db_directory`: Open database directory in file explorer
+  - `cleanup_old_dbs`: Clean up old database files automatically
 - **`db.rs`**: Database connection management and schema initialization
 - **`domain.rs`**: Data structures, error types, and type definitions
 - **`config.rs`**: Application configuration handling with JSON persistence
 
 ### Frontend (`src/`)
 
-- **`index.html`**: Main application UI with Chinese/English mixed interface, includes theme switcher
-- **`main.js`**: JavaScript application logic using Tauri API (`window.__TAURI__.tauri.invoke`), includes sorting and detail view functionality
-- **`settings.html`/`settings.js`**: Settings page for database configuration, includes theme switcher
-- **`style.css`**: Application styling with dark/light theme support
+- **`index.html`**: Main application UI with Chinese/English mixed interface, includes theme switcher and enhanced pagination controls
+- **`main.js`**: JavaScript application logic using Tauri API (`window.__TAURI__.tauri.invoke`), includes sorting, detail view functionality, and pagination enhancements
+- **`settings.html`/`settings.js`**: Settings page for database configuration, includes theme switcher and browser database synchronization interface
+- **`style.css`**: Application styling with dark/light theme support, modern glass morphism effects, and enhanced visual design
 - **`theme.js`**: Theme management system with auto/light/dark modes
 - **`theme-init.js`**: Prevents theme flicker by applying theme before page render
 
@@ -144,9 +152,22 @@ Key Features:
    await shell.open(url);
    ```
 
-4. **Toast Notifications**: User feedback system for actions
+4. **Toast Notifications**: User feedback system for actions with success and error variants
    ```javascript
-   showToast('Message', 'info'); // or 'error'
+   showToast('Message', 'info'); // or 'error', 'success'
+   ```
+
+5. **Pagination Enhancement**: Direct page navigation support
+   ```javascript
+   // Update pagination state and navigate to specific page
+   state.page = targetPage;
+   fetchHistory();
+   ```
+
+6. **File Dialog Operations**: Browser database file selection and management
+   ```javascript
+   const browserDbPath = await invoke('browse_browser_db_file');
+   await invoke('copy_browser_db_to_app', { sourcePath: browserDbPath });
    ```
 
 ## Database Schema
@@ -177,7 +198,10 @@ Sorting is supported on `title`, `last_visited_time`, and `num_visits` fields.
 4. **Testing**: Cargo test support (minimal tests currently)
 5. **Build Scripts**: npm scripts for common development tasks
 6. **Theme Management**: Systematic theme switching with anti-flicker protection
-7. **User Experience**: Interactive sorting, detail views, and toast notifications
+7. **User Experience**: Interactive sorting, detail views, toast notifications, enhanced pagination
+8. **File Management**: Browser database synchronization with cross-platform file operations
+9. **Modern UI Design**: Glass morphism effects, semi-transparent backgrounds, rounded corners
+10. **Statistics Display**: Unified KPI cards with top sites ranking and improved metrics
 
 ## Important Files to Know
 
@@ -186,6 +210,8 @@ Sorting is supported on `title`, `last_visited_time`, and `num_visits` fields.
 - **Documentation**: `DESIGN.md` - Comprehensive design document
 - **Entry Points**: `src-tauri/src/main.rs` and `src/index.html`
 - **Theme System**: `src/theme.js` and `src/theme-init.js` - Complete theme management
+- **Browser Database Sync**: Settings page components for browser database management
+- **Enhanced UI**: Modern styling components in `src/style.css` with glass morphism effects
 
 ## Common Operations
 
@@ -207,12 +233,28 @@ Sorting is supported on `title`, `last_visited_time`, and `num_visits` fields.
 2. Follow the existing query patterns with sorting support
 3. Handle errors appropriately with `AppError`
 
+### Browser Database Synchronization
+
+1. Browse browser database files: `invoke('browse_browser_db_file')`
+2. Copy browser database to app: `invoke('copy_browser_db_to_app', { sourcePath })`
+3. Set browser database as data source: `invoke('set_browser_db_path', { path })`
+4. Open database directory: `invoke('open_db_directory')`
+5. Clean up old databases: `invoke('cleanup_old_dbs')`
+
+### Enhanced Pagination
+
+1. Update page input field for direct navigation
+2. Synchronize pagination state with UI components
+3. Handle pagination bounds and validation
+4. Update total page count display
+
 ### Frontend State Updates
 
 1. Update the global `state` object (including sort parameters)
 2. Call corresponding fetch functions
 3. Re-render affected UI components
 4. Update sort indicators for table headers
+5. Handle pagination state changes and page input validation
 
 ## Development Environment
 
