@@ -158,7 +158,7 @@ body {
 }
 
 .search-bar button:hover {
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
 
@@ -183,7 +183,7 @@ body {
   box-shadow: var(--shadow-sm);
 }
 
-.theme-btn:hover {
+.theme-btn:active {
   background: var(--hover-bg);
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
@@ -279,7 +279,6 @@ body {
   outline: none;
   border-color: var(--accent-primary);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-  transform: translateY(-1px);
 }
 
 .filters button {
@@ -297,7 +296,7 @@ body {
 }
 
 .filters button:hover {
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
 
@@ -396,7 +395,7 @@ body {
   border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
 }
 
-.kpi-card:hover {
+.kpi-card:active {
   transform: translateY(-4px);
   box-shadow: var(--shadow-lg);
 }
@@ -521,11 +520,11 @@ body {
 /* 次数 */
 .history-list tbody tr {
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
 }
 
-.history-list tbody tr:hover {
+.history-list tbody tr:active {
   background: var(--hover-bg);
   backdrop-filter: blur(10px);
   transform: translateY(-1px);
@@ -780,24 +779,24 @@ body {
   .layout {
     grid-template-columns: 1fr;
   }
-  
+
   .app-header {
     padding: 0.75rem 1rem;
   }
-  
+
   .app-header h1 {
     font-size: 1.1rem;
   }
-  
+
   .search-bar {
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .search-bar input {
     width: 100%;
   }
-  
+
   .header-actions {
     flex-direction: column;
     gap: 0.5rem;
@@ -807,18 +806,24 @@ body {
 
 /* 动画关键帧 */
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-10px);
   }
 }
 
 @keyframes glow {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: var(--shadow-sm);
   }
+
   50% {
     box-shadow: var(--shadow-lg);
   }
@@ -872,7 +877,7 @@ body {
   box-shadow: var(--shadow-sm);
 }
 
-.nav-btn:hover {
+.nav-btn:active {
   background: var(--hover-bg);
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
@@ -895,10 +900,6 @@ body {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.settings-section:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
-}
 
 .settings-section h2 {
   margin-top: 0;
@@ -940,7 +941,6 @@ body {
   outline: none;
   border-color: var(--accent-primary);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-  transform: translateY(-1px);
 }
 
 .setting-description {
@@ -998,7 +998,7 @@ body {
   color: #fff;
 }
 
-.btn-primary:hover:not(:disabled) {
+.btn-primary:active:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
@@ -1010,7 +1010,7 @@ body {
   border: 1px solid var(--border-glass);
 }
 
-.btn-secondary:hover:not(:disabled) {
+.btn-secondary:active:not(:disabled) {
   background: var(--hover-bg);
   transform: translateY(-1px);
   box-shadow: var(--shadow-sm);
