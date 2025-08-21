@@ -6,6 +6,7 @@ use std::path::{Path, PathBuf};
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct AppConfig {
     pub db_path: Option<String>,
+    pub browser_db_path: Option<String>,
     pub last_updated: i64,
 }
 
@@ -13,6 +14,7 @@ impl Default for AppConfig {
     fn default() -> Self {
         Self {
             db_path: None,
+            browser_db_path: None,
             last_updated: chrono::Utc::now().timestamp(),
         }
     }
@@ -65,6 +67,24 @@ impl AppConfig {
 
     pub fn get_db_path(&self) -> Option<String> {
         self.db_path.clone()
+    }
+
+    pub fn set_browser_db_path(&mut self, path: String) -> Result<()> {
+        self.browser_db_path = Some(path);
+        self.last_updated = chrono::Utc::now().timestamp();
+        self.save()?;
+        Ok(())
+    }
+
+    pub fn get_app_dir() -> Result<PathBuf> {
+        let app_dir = tauri::api::path::app_data_dir(tauri::generate_context!().config())
+            .ok_or_else(|| anyhow::anyhow!("无法获取应用数据目录"))?;
+
+        if !app_dir.exists() {
+            fs::create_dir_all(&app_dir)?;
+        }
+
+        Ok(app_dir)
     }
 
     pub fn validate_db_path(path: &str) -> Result<bool> {
