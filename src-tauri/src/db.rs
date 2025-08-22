@@ -11,17 +11,22 @@ fn get_or_create_connection() -> rusqlite::Result<()> {
     if conn_guard.is_none() {
         // 尝试从配置加载数据库路径
         let config = AppConfig::load().unwrap_or_default();
-        let db_path = config
-            .get_db_path()
-            .unwrap_or_else(|| "history.db".to_string());
-
+        let db_path = config.get_db_path().unwrap_or_else(|| {
+            AppConfig::get_app_dir()
+                .map(|app_dir| {
+                    app_dir
+                        .join("history_test.db")
+                        .to_string_lossy()
+                        .to_string()
+                })
+                .unwrap_or_else(|_| "history_test.db".to_string())
+        });
         let conn = Connection::open(&db_path)?;
         // 基础性能设置
         conn.pragma_update(None, "journal_mode", "WAL").ok();
         conn.pragma_update(None, "synchronous", "NORMAL").ok();
 
-        // 仅在使用默认数据库时初始化schema
-        if db_path == "history.db" {
+        if db_path.ends_with("history_test.db") {
             init_schema(&conn)?;
         }
 

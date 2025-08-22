@@ -420,6 +420,11 @@ pub fn cleanup_old_dbs() -> AppResult<String> {
         .file_name()
         .ok_or_else(|| AppError::Invalid("无法获取当前数据库文件名".to_string()))?;
 
+    // 获取当前数据库的基础名称（不包含扩展名）
+    let current_basename = current_db
+        .file_stem()
+        .ok_or_else(|| AppError::Invalid("无法获取当前数据库基础名称".to_string()))?;
+
     // 读取目录中的所有文件
     let entries =
         fs::read_dir(parent_dir).map_err(|e| AppError::Internal(format!("读取目录失败: {}", e)))?;
@@ -430,13 +435,18 @@ pub fn cleanup_old_dbs() -> AppResult<String> {
         let entry = entry.map_err(|e| AppError::Internal(format!("读取目录项失败: {}", e)))?;
         let entry_path = entry.path();
 
-        // 检查是否是.db文件
+        // 检查是否是.db/.db-shm/.db-wal文件
         if let Some(extension) = entry_path.extension() {
-            if extension == "db" {
-                // 检查是否是当前使用的数据库文件
+            if extension == "db" || extension == "db-shm" || extension == "db-wal" {
+                // 检查是否是当前使用的数据库相关文件
                 if let Some(file_name) = entry_path.file_name() {
-                    if file_name != current_filename {
-                        // 删除其他.db文件
+                    let file_name_str = file_name.to_string_lossy();
+                    let current_basename_str = current_basename.to_string_lossy();
+                    let is_current_db_file = file_name == current_filename
+                        || file_name_str == format!("{}.db-shm", current_basename_str)
+                        || file_name_str == format!("{}.db-wal", current_basename_str);
+
+                    if !is_current_db_file {
                         if let Err(e) = fs::remove_file(&entry_path) {
                             eprintln!("删除文件失败 {:?}: {}", entry_path, e);
                         } else {
