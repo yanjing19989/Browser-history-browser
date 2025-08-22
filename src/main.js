@@ -27,7 +27,7 @@ async function fetchStats() {
       timeRange = `${startTs}-${endTs}`;
     }
 
-    const stats = await invoke('stats_overview', { time_range: timeRange });
+    const stats = await invoke('stats_overview', { timeRange: timeRange });
     renderKpis(stats);
   } catch (e) {
     console.error('获取统计失败:', e);

@@ -156,16 +156,16 @@ pub fn stats_overview(time_range: Option<String>) -> AppResult<OverviewStats> {
     let ts_lower = compute_time_lower(&time_range);
     let ts_upper = compute_time_upper(&time_range);
 
-    let mut where_clauses = Vec::new();
-    let mut params = Vec::new();
+    let mut where_clauses: Vec<String> = Vec::new();
+    let mut params: Vec<rusqlite::types::Value> = Vec::new();
 
     if let Some(lower) = ts_lower {
         where_clauses.push("last_visited_time >= ?".to_string());
-        params.push(lower);
+        params.push(lower.into());
     }
     if let Some(upper) = ts_upper {
         where_clauses.push("last_visited_time <= ?".to_string());
-        params.push(upper);
+        params.push(upper.into());
     }
 
     let where_sql = if where_clauses.is_empty() {
