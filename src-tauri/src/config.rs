@@ -22,9 +22,9 @@ impl Default for AppConfig {
 
 impl AppConfig {
     fn config_file_path() -> Result<PathBuf> {
-        let app_dir = tauri::api::path::app_config_dir(tauri::generate_context!().config())
+        let mut app_dir = tauri::api::path::app_config_dir(&tauri::Config::default())
             .ok_or_else(|| anyhow::anyhow!("无法获取应用配置目录"))?;
-
+        app_dir.push("BrowserHistoryBrowser");
         if !app_dir.exists() {
             fs::create_dir_all(&app_dir)?;
         }
@@ -77,9 +77,9 @@ impl AppConfig {
     }
 
     pub fn get_app_dir() -> Result<PathBuf> {
-        let app_dir = tauri::api::path::app_data_dir(tauri::generate_context!().config())
+        let mut app_dir = tauri::api::path::app_config_dir(&tauri::Config::default())
             .ok_or_else(|| anyhow::anyhow!("无法获取应用数据目录"))?;
-
+        app_dir.push("BrowserHistoryBrowser");
         if !app_dir.exists() {
             fs::create_dir_all(&app_dir)?;
         }

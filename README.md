@@ -131,7 +131,9 @@ invoke('list_history', {
   - Rust 代码格式检查 (`cargo fmt --check`)
   - Rust 代码 linting (`cargo clippy`)
   - Rust 单元测试 (`cargo test`)
-- **Windows 构建**：生成可执行文件和 MSI 安装包
+- **多平台构建**：
+  - **Windows 构建**：生成可执行文件和 MSI 安装包
+  - **macOS 构建**：生成 .app 应用束和 DMG 安装包
 - **构建产物上传**：将构建结果保存为 artifacts，保留 30 天
 - **自动发布**：创建 release 时自动上传构建产物
 
