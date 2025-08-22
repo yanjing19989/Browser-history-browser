@@ -305,8 +305,8 @@ pub fn browse_browser_db_file() -> AppResult<Option<String>> {
     use tauri::api::dialog::blocking::FileDialogBuilder;
 
     let file_path = FileDialogBuilder::new()
-        .add_filter("SQLite数据库", &["db", "sqlite", "sqlite3"])
         .add_filter("Chrome/Edge数据库", &["*"])
+        .add_filter("SQLite数据库", &["db", "sqlite", "sqlite3"])
         .add_filter("Firefox数据库", &["sqlite"])
         .add_filter("所有文件", &["*"])
         .set_title("选择浏览器历史数据库文件")

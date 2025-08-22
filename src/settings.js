@@ -110,7 +110,6 @@ async function validatePath() {
 
   try {
     elements.validateBtn.disabled = true;
-    elements.validateBtn.textContent = '验证中...';
 
     const isValid = await invoke('validate_db_path', { path });
 
@@ -127,7 +126,6 @@ async function validatePath() {
     showToast('验证失败: ' + error, 'error');
   } finally {
     elements.validateBtn.disabled = false;
-    elements.validateBtn.textContent = '验证路径';
     updateButtons();
   }
 }
@@ -139,7 +137,6 @@ async function applySettings() {
 
   try {
     elements.applyBtn.disabled = true;
-    elements.applyBtn.textContent = '应用中...';
 
     const result = await invoke('set_db_path', { path });
 
@@ -155,7 +152,6 @@ async function applySettings() {
     showToast('设置失败: ' + error, 'error');
   } finally {
     elements.applyBtn.disabled = false;
-    elements.applyBtn.textContent = '应用设置';
     updateButtons();
   }
 }
@@ -264,7 +260,6 @@ async function syncBrowserDb() {
 
   try {
     elements.syncBtn.disabled = true;
-    elements.syncBtn.textContent = '📥 同步中...';
     updateSyncStatus('warning', '正在同步数据库...');
 
     // 复制浏览器数据库到程序目录
@@ -277,8 +272,6 @@ async function syncBrowserDb() {
     updateSyncStatus('ok', '同步成功');
     showToast('浏览器数据库同步成功!', 'success');
 
-    // 清空浏览器路径
-    elements.browserDbPath.value = '';
     updateSyncButtons();
 
   } catch (error) {
@@ -287,7 +280,6 @@ async function syncBrowserDb() {
     showToast('同步失败: ' + error, 'error');
   } finally {
     elements.syncBtn.disabled = false;
-    elements.syncBtn.textContent = '📥 同步到程序';
     updateSyncButtons();
   }
 }
