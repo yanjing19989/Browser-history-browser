@@ -76,70 +76,69 @@ jobs:
           src-tauri/target/release/bundle/**/*.msi
           src-tauri/target/release/BrowserHistoryBrowser.exe
 
-  build-macos:
-    runs-on: macos-latest
+  # build-macos:
+  #   runs-on: macos-latest
     
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+  #   steps:
+  #   - name: Checkout repository
+  #     uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        cache: 'npm'
+  #   - name: Setup Node.js
+  #     uses: actions/setup-node@v4
+  #     with:
+  #       node-version: '18'
+  #       cache: 'npm'
 
-    - name: Setup Rust
-      uses: dtolnay/rust-toolchain@stable
-      with:
-        components: rustfmt, clippy
+  #   - name: Setup Rust
+  #     uses: dtolnay/rust-toolchain@stable
+  #     with:
+  #       components: rustfmt, clippy
 
-    # 添加 macOS 系统依赖
-    - name: Install macOS dependencies
-      run: |
-        brew install create-dmg
-        sudo xcode-select --install || true
+  #   - name: Install macOS dependencies
+  #     run: |
+  #       brew install create-dmg
+  #       sudo xcode-select --install || true
 
-    - name: Rust cache
-      uses: swatinem/rust-cache@v2
-      with:
-        workspaces: './src-tauri -> target'
+  #   - name: Rust cache
+  #     uses: swatinem/rust-cache@v2
+  #     with:
+  #       workspaces: './src-tauri -> target'
 
-    - name: Install frontend dependencies
-      run: npm install
+  #   - name: Install frontend dependencies
+  #     run: npm install
 
-    - name: Check Rust formatting
-      run: |
-        cd src-tauri
-        cargo fmt --all -- --check
+  #   - name: Check Rust formatting
+  #     run: |
+  #       cd src-tauri
+  #       cargo fmt --all -- --check
 
-    - name: Run Rust linting
-      run: |
-        cd src-tauri
-        cargo clippy --all-targets --all-features -- -D warnings
+  #   - name: Run Rust linting
+  #     run: |
+  #       cd src-tauri
+  #       cargo clippy --all-targets --all-features -- -D warnings
 
-    - name: Run Rust tests
-      run: |
-        cd src-tauri
-        cargo test
+  #   - name: Run Rust tests
+  #     run: |
+  #       cd src-tauri
+  #       cargo test
 
-    - name: Build Tauri application
-      run: npm run build
+  #   - name: Build Tauri application
+  #     run: npm run build
 
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: macos-build
-        path: |
-          src-tauri/target/release/bundle/dmg/*.dmg
-          src-tauri/target/release/bundle/macos/*.app
-        retention-days: 30
-        if-no-files-found: warn
+  #   - name: Upload build artifacts
+  #     uses: actions/upload-artifact@v4
+  #     with:
+  #       name: macos-build
+  #       path: |
+  #         src-tauri/target/release/bundle/dmg/*.dmg
+  #         src-tauri/target/release/bundle/macos/*.app
+  #       retention-days: 30
+  #       if-no-files-found: warn
 
-    - name: Upload to release
-      if: github.event_name == 'release'
-      uses: softprops/action-gh-release@v1
-      with:
-        files: |
-          src-tauri/target/release/bundle/dmg/*.dmg
-          src-tauri/target/release/bundle/macos/*.app
+  #   - name: Upload to release
+  #     if: github.event_name == 'release'
+  #     uses: softprops/action-gh-release@v1
+  #     with:
+  #       files: |
+  #         src-tauri/target/release/bundle/dmg/*.dmg
+  #         src-tauri/target/release/bundle/macos/*.app
