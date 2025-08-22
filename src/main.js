@@ -14,7 +14,9 @@ const state = {
   locale: '',
   items: [],
   sortBy: 'last_visited_time', // 默认按最后访问时间排序
-  sortOrder: 'desc' // 默认降序
+  sortOrder: 'desc', // 默认降序
+  filtersVisible: false, // 过滤界面默认隐藏
+  detailsVisible: false  // 详情界面默认隐藏
 };
 
 async function fetchStats() {
@@ -138,7 +140,7 @@ function renderTable() {
   tbody.innerHTML = '';
   state.items.forEach(item => {
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${escapeHtml(item.title || '')}</td><td>${escapeHtml(shorten(item.url, 48))}</td><td>${fmtTime(item.last_visited_time)}</td><td>${item.num_visits}</td>`;
+    tr.innerHTML = `<td>${escapeHtml(item.title || '')}</td><td>${escapeHtml(item.url || '')}</td><td>${fmtTime(item.last_visited_time)}</td><td>${item.num_visits}</td>`;
     tr.addEventListener('click', () => showDetail(item));
     tbody.appendChild(tr);
   });
@@ -170,6 +172,71 @@ function updateSortIndicators() {
   }
 }
 
+// 控制界面显示/隐藏的函数
+function toggleFilters() {
+  state.filtersVisible = !state.filtersVisible;
+  updateLayout();
+
+  const filterBtn = document.getElementById('filterToggleBtn');
+  if (state.filtersVisible) {
+    filterBtn.classList.add('active');
+    filterBtn.title = '隐藏过滤';
+    filterBtn.textContent = '☰';
+  } else {
+    filterBtn.classList.remove('active');
+    filterBtn.title = '显示过滤';
+    filterBtn.textContent = '☰';
+  }
+}
+
+function showDetails() {
+  if (!state.detailsVisible) {
+    state.detailsVisible = true;
+    updateLayout();
+  }
+}
+
+function hideDetails() {
+  state.detailsVisible = false;
+  updateLayout();
+
+  // 清空详情内容
+  const panel = document.getElementById('detailContent');
+  const actions = document.getElementById('detailActions');
+  actions.style.display = 'none';
+}
+
+function updateLayout() {
+  const layout = document.querySelector('.layout');
+  const filtersPanel = document.querySelector('.filters');
+  const detailsPanel = document.querySelector('.details');
+
+  // 清除所有布局类
+  layout.classList.remove('filters-visible', 'details-visible', 'both-visible');
+
+  // 根据状态添加相应的类
+  if (state.filtersVisible && state.detailsVisible) {
+    layout.classList.add('both-visible');
+  } else if (state.filtersVisible) {
+    layout.classList.add('filters-visible');
+  } else if (state.detailsVisible) {
+    layout.classList.add('details-visible');
+  }
+
+  // 更新面板的可见性类
+  if (state.filtersVisible) {
+    filtersPanel.classList.add('visible');
+  } else {
+    filtersPanel.classList.remove('visible');
+  }
+
+  if (state.detailsVisible) {
+    detailsPanel.classList.add('visible');
+  } else {
+    detailsPanel.classList.remove('visible');
+  }
+}
+
 function handleSort(sortBy) {
   if (state.sortBy === sortBy) {
     // 如果点击的是当前排序列，切换排序方向
@@ -183,7 +250,12 @@ function handleSort(sortBy) {
   // 重置到第一页并重新获取数据
   state.page = 1;
   fetchList();
-} function showDetail(item) {
+}
+
+function showDetail(item) {
+  // 显示详情界面
+  showDetails();
+
   const panel = document.getElementById('detailContent');
   const actions = document.getElementById('detailActions');
 
@@ -407,7 +479,16 @@ document.addEventListener('DOMContentLoaded', () => {
       handleSort(sortBy);
     });
   });
+
+  // 初始化界面状态
+  updateLayout();
 });
+
+// 过滤按钮事件
+document.getElementById('filterToggleBtn').addEventListener('click', toggleFilters);
+
+// 详情关闭按钮事件
+document.getElementById('detailsCloseBtn').addEventListener('click', hideDetails);
 
 // 初始加载
 fetchStats();
