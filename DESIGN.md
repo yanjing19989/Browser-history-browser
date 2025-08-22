@@ -186,7 +186,7 @@ root
  └─ DESIGN.md
 ```
 CI：
-- GitHub Actions：Rust fmt + clippy + cargo test；Node pnpm build；Playwright（可选 matrix OS）。
+- GitHub Actions：Rust fmt + clippy + cargo test；Node pnpm build；多平台构建 (Windows + macOS)。
 
 ## 15. 路线图
 阶段 1 (MVP 2 周)：基础查询、分页、仪表盘简版、FTS 搜索、实体分布、i18n。
