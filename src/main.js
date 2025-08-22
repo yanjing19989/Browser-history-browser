@@ -203,7 +203,6 @@ function hideDetails() {
   // 清空详情内容
   const panel = document.getElementById('detailContent');
   const actions = document.getElementById('detailActions');
-  panel.innerHTML = '选择一条记录查看...';
   actions.style.display = 'none';
 }
 
