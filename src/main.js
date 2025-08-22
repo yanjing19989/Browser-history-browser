@@ -140,7 +140,7 @@ function renderTable() {
   tbody.innerHTML = '';
   state.items.forEach(item => {
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${escapeHtml(item.title || '')}</td><td>${escapeHtml(shorten(item.url, 48))}</td><td>${fmtTime(item.last_visited_time)}</td><td>${item.num_visits}</td>`;
+    tr.innerHTML = `<td>${escapeHtml(item.title || '')}</td><td>${escapeHtml(item.url || '')}</td><td>${fmtTime(item.last_visited_time)}</td><td>${item.num_visits}</td>`;
     tr.addEventListener('click', () => showDetail(item));
     tbody.appendChild(tr);
   });

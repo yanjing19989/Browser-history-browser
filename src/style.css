@@ -218,7 +218,7 @@ body {
 .filters label {
   display: block;
   margin-bottom: 0.75rem;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   color: var(--text-secondary);
 }
 
@@ -306,7 +306,7 @@ body {
   padding: 0.5rem;
   border: 1px solid var(--border-glass);
   border-radius: var(--border-radius-sm);
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   background: var(--input-bg);
   backdrop-filter: blur(10px);
   color: var(--text-primary);
@@ -426,7 +426,7 @@ body {
   border: 1px solid var(--table-border);
   border-radius: var(--border-radius-md);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   color: var(--text-primary);
 }
 
@@ -476,8 +476,9 @@ body {
 .history-list td {
   padding: 0.75rem 1rem;
   border-bottom: 1px solid var(--table-border);
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   text-align: left;
+  line-height: 1.4;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -721,7 +722,7 @@ body {
   margin-top: 0.25rem;
   word-break: break-word;
   color: var(--text-primary);
-  font-size: 0.85rem;
+  font-size: 0.95rem;
 }
 
 .detail-url {
@@ -748,7 +749,7 @@ body {
   color: var(--text-primary);
   border-radius: var(--border-radius-lg);
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   font-weight: 600;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
