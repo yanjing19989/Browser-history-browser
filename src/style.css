@@ -77,7 +77,7 @@ body {
   align-items: center;
   padding: 1rem 1.5rem;
   background: var(--bg-glass);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(5px);
   border-bottom: 1px solid var(--border-glass);
   color: var(--text-primary);
   position: sticky;
@@ -113,7 +113,6 @@ body {
   border-radius: var(--border-radius-md);
   width: 280px;
   background: var(--bg-glass);
-  backdrop-filter: blur(10px);
   color: var(--text-primary);
   font-size: 0.9rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -162,7 +161,6 @@ body {
 
 .filters {
   background: var(--bg-glass);
-  backdrop-filter: blur(20px);
   padding: 1rem;
   border-radius: var(--border-radius-lg);
   border: 1px solid var(--border-glass);
@@ -185,7 +183,6 @@ body {
 
 .details {
   background: var(--bg-glass);
-  backdrop-filter: blur(20px);
   padding: 1rem;
   border-radius: var(--border-radius-lg);
   border: 1px solid var(--border-glass);
@@ -230,7 +227,6 @@ body {
   border: 1px solid var(--border-glass);
   border-radius: var(--border-radius-md);
   background: var(--input-bg);
-  backdrop-filter: blur(10px);
   color: var(--text-primary);
   font-size: 0.9rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -295,7 +291,6 @@ body {
   margin: 0.75rem 0;
   padding: 0.75rem;
   background: var(--bg-glass);
-  backdrop-filter: blur(10px);
   border-radius: var(--border-radius-md);
   border: 1px solid var(--border-glass);
   box-shadow: var(--shadow-sm);
@@ -308,7 +303,6 @@ body {
   border-radius: var(--border-radius-sm);
   font-size: 0.95rem;
   background: var(--input-bg);
-  backdrop-filter: blur(10px);
   color: var(--text-primary);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   -webkit-appearance: none;
@@ -343,7 +337,6 @@ body {
   overflow: auto;
   padding: 1rem;
   background: var(--bg-glass);
-  backdrop-filter: blur(20px);
   border-radius: var(--border-radius-lg);
   border: 1px solid var(--border-glass);
   box-shadow: var(--shadow-glass);
@@ -355,7 +348,6 @@ body {
 
 .kpi-card {
   background: var(--bg-glass);
-  backdrop-filter: blur(20px);
   padding: 1.5rem 2rem;
   border-radius: var(--border-radius-lg);
   border: 1px solid var(--border-glass);
@@ -422,7 +414,6 @@ body {
   align-items: center;
   padding: 0.5rem 0.75rem;
   background: var(--bg-glass);
-  backdrop-filter: blur(10px);
   border: 1px solid var(--table-border);
   border-radius: var(--border-radius-md);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -464,7 +455,6 @@ body {
   border-collapse: separate;
   border-spacing: 0;
   background: var(--bg-glass);
-  backdrop-filter: blur(20px);
   table-layout: fixed;
   border-radius: var(--border-radius-lg);
   overflow: hidden;
@@ -486,7 +476,6 @@ body {
 
 .history-list th {
   background: var(--bg-glass);
-  backdrop-filter: blur(20px);
   color: var(--text-secondary);
   font-weight: 700;
   font-size: 0.8rem;
@@ -567,7 +556,6 @@ body {
 
 .history-list tbody tr:active {
   background: var(--hover-bg);
-  backdrop-filter: blur(10px);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
@@ -593,7 +581,6 @@ body {
   padding: 0.75rem 1.5rem;
   border: 1px solid var(--border-glass);
   background: var(--bg-glass);
-  backdrop-filter: blur(20px);
   color: var(--text-primary);
   border-radius: var(--border-radius-lg);
   cursor: pointer;
@@ -615,7 +602,6 @@ body {
   opacity: 0.4;
   cursor: not-allowed;
   background: var(--border-glass);
-  backdrop-filter: blur(5px);
 }
 
 .pagination button:active:not(:disabled) {
@@ -637,7 +623,6 @@ body {
   border: 1px solid var(--border-glass);
   border-radius: var(--border-radius-md);
   background: var(--bg-glass);
-  backdrop-filter: blur(10px);
   color: var(--text-primary);
   text-align: center;
   font-size: 0.9rem;
@@ -696,7 +681,6 @@ body {
   padding: 1rem;
   border-radius: var(--border-radius-md);
   background: var(--bg-glass);
-  backdrop-filter: blur(10px);
   border: 1px solid var(--border-glass);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -745,7 +729,6 @@ body {
   padding: 0.875rem 1rem;
   border: 1px solid var(--border-glass);
   background: var(--bg-glass);
-  backdrop-filter: blur(20px);
   color: var(--text-primary);
   border-radius: var(--border-radius-lg);
   cursor: pointer;
@@ -776,7 +759,7 @@ body {
   top: 30px;
   right: 30px;
   background: var(--bg-glass);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(5px);
   color: var(--text-primary);
   border: 1px solid var(--border-glass);
   padding: 1rem 1.5rem;
@@ -854,7 +837,6 @@ body {
 
 .settings-section {
   background: var(--bg-glass);
-  backdrop-filter: blur(20px);
   margin-bottom: 1rem;
   padding: 2rem;
   border-radius: var(--border-radius-xl);
@@ -894,7 +876,6 @@ body {
   border: 1px solid var(--border-glass);
   border-radius: var(--border-radius-md);
   background: var(--input-bg);
-  backdrop-filter: blur(10px);
   color: var(--text-primary);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: var(--shadow-sm);
@@ -968,7 +949,6 @@ body {
 
 .btn-secondary {
   background: var(--bg-glass);
-  backdrop-filter: blur(10px);
   color: var(--text-secondary);
   border: 1px solid var(--border-glass);
 }
@@ -1023,7 +1003,6 @@ body {
 
 ::-webkit-scrollbar-track {
   background: var(--bg-glass);
-  backdrop-filter: blur(10px);
   border-radius: var(--border-radius-md);
   border: 1px solid var(--border-glass);
   margin: 10px 0;
@@ -1043,7 +1022,6 @@ body {
 
 ::-webkit-scrollbar-corner {
   background: var(--bg-glass);
-  backdrop-filter: blur(10px);
 }
 
 /* Firefox滚动条 */
@@ -1079,7 +1057,6 @@ html {
   cursor: pointer;
   font-size: 12px;
   transition: all 0.2s ease;
-  backdrop-filter: blur(10px);
 }
 
 .copy-path-btn:hover {
@@ -1105,7 +1082,6 @@ html {
   background: var(--bg-glass);
   border: 1px solid var(--border-glass);
   border-radius: var(--border-radius-md);
-  backdrop-filter: blur(10px);
 }
 
 .sync-description {
