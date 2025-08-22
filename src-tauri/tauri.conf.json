@@ -28,6 +28,10 @@
       "shell": {
         "all": false,
         "open": true
+      },
+      "window": {
+        "all": false,
+        "show": true
       }
     },
     "windows": [
@@ -43,6 +47,7 @@
         "decorations": true,
         "alwaysOnTop": false,
         "skipTaskbar": false,
+        "visible": false,
         "theme": "Dark"
       }
     ],

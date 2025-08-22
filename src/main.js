@@ -491,5 +491,16 @@ document.getElementById('filterToggleBtn').addEventListener('click', toggleFilte
 document.getElementById('detailsCloseBtn').addEventListener('click', hideDetails);
 
 // 初始加载
-fetchStats();
-fetchList();
+async function initializeApp() {
+  await fetchStats();
+  await fetchList();
+  
+  // 显示窗口
+  if (window.__TAURI__.window) {
+    const { appWindow } = window.__TAURI__.window;
+    await appWindow.show();
+  }
+}
+
+// 启动应用
+initializeApp();
