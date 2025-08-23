@@ -139,46 +139,38 @@ body {
 }
 
 .layout {
-  display: grid;
-  grid-template-columns: 0px 1fr 0px;
+  display: flex;
+  justify-content: center;
   min-height: calc(100vh - 76px);
-  gap: 0.5rem;
   padding: 0.5rem;
-  transition: grid-template-columns 0.3s cubic-bezier(0.4, 0, 0.2, 1), gap 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.layout.filters-visible {
-  grid-template-columns: 240px 1fr 0px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
 }
 
 .layout.details-visible {
-  grid-template-columns: 0px 1fr 320px;
-}
-
-.layout.both-visible {
-  grid-template-columns: 240px 1fr 320px;
+  justify-content: flex-start;
 }
 
 .filters {
   background: var(--bg-glass);
+  backdrop-filter: blur(5px);
   padding: 1rem;
   border-radius: var(--border-radius-lg);
   border: 1px solid var(--border-glass);
   box-shadow: var(--shadow-glass);
+  position: fixed;
+  top: 0;
+  left: 50%;
   opacity: 0;
-  transform: translateX(-100%);
+  transform: translateX(-50%) translateY(-100%);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  min-width: 240px;
-  position: sticky;
-  top: calc(76px);
-  height: fit-content;
-  max-height: calc(100vh - 76px - 1rem);
   overflow-y: auto;
+  z-index: 200;
 }
 
 .filters.visible {
   opacity: 1;
-  transform: translateX(0);
+  transform: translateX(-50%) translateY(160px);
 }
 
 .details {
@@ -186,17 +178,16 @@ body {
   padding: 1rem;
   border-radius: var(--border-radius-lg);
   border: 1px solid var(--border-glass);
-  overflow: auto;
   box-shadow: var(--shadow-glass);
-  opacity: 0;
-  transform: translateX(-100%);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  min-width: 320px;
-  position: sticky;
-  top: calc(76px);
-  height: fit-content;
-  max-height: calc(100vh - 76px - 1rem);
+  width: 320px;
+  position: fixed;
+  top: calc(76px + 0.3rem);
+  right: 0.5rem;
+  height: calc(100vh - 76px - 0.9rem);
   overflow-y: auto;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .details.visible {
@@ -334,12 +325,19 @@ body {
 }
 
 .content {
+  margin: 0.1rem;
+  max-width: calc(100vw - 350px - 0.5rem);
   overflow: auto;
   padding: 1rem;
   background: var(--bg-glass);
   border-radius: var(--border-radius-lg);
   border: 1px solid var(--border-glass);
   box-shadow: var(--shadow-glass);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.layout.details-visible .content {
+  margin-right: 330px;
 }
 
 .kpis {
