@@ -175,7 +175,13 @@ function updateSortIndicators() {
 // 控制界面显示/隐藏的函数
 function toggleFilters() {
   state.filtersVisible = !state.filtersVisible;
-  updateLayout();
+  const filtersPanel = document.querySelector('.filters');
+  
+  if (state.filtersVisible) {
+    filtersPanel.classList.add('visible');
+  } else {
+    filtersPanel.classList.remove('visible');
+  }
 
   const filterBtn = document.getElementById('filterToggleBtn');
   if (state.filtersVisible) {
@@ -208,31 +214,14 @@ function hideDetails() {
 
 function updateLayout() {
   const layout = document.querySelector('.layout');
-  const filtersPanel = document.querySelector('.filters');
   const detailsPanel = document.querySelector('.details');
 
-  // 清除所有布局类
-  layout.classList.remove('filters-visible', 'details-visible', 'both-visible');
-
-  // 根据状态添加相应的类
-  if (state.filtersVisible && state.detailsVisible) {
-    layout.classList.add('both-visible');
-  } else if (state.filtersVisible) {
-    layout.classList.add('filters-visible');
-  } else if (state.detailsVisible) {
-    layout.classList.add('details-visible');
-  }
-
-  // 更新面板的可见性类
-  if (state.filtersVisible) {
-    filtersPanel.classList.add('visible');
-  } else {
-    filtersPanel.classList.remove('visible');
-  }
-
+  // 根据状态控制详情面板和布局
   if (state.detailsVisible) {
+    layout.classList.add('details-visible');
     detailsPanel.classList.add('visible');
   } else {
+    layout.classList.remove('details-visible');
     detailsPanel.classList.remove('visible');
   }
 }
@@ -489,6 +478,18 @@ document.getElementById('filterToggleBtn').addEventListener('click', toggleFilte
 
 // 详情关闭按钮事件
 document.getElementById('detailsCloseBtn').addEventListener('click', hideDetails);
+
+// 点击外部关闭过滤器
+document.addEventListener('click', (e) => {
+  const filtersPanel = document.querySelector('.filters');
+  const filterBtn = document.getElementById('filterToggleBtn');
+  
+  if (state.filtersVisible && 
+      !filtersPanel.contains(e.target) && 
+      !filterBtn.contains(e.target)) {
+    toggleFilters();
+  }
+});
 
 // 初始加载
 async function initializeApp() {
