@@ -302,15 +302,56 @@ pub fn browse_db_file() -> AppResult<Option<String>> {
 
 #[tauri::command]
 pub fn browse_browser_db_file() -> AppResult<Option<String>> {
+    use std::path::PathBuf;
     use tauri::api::dialog::blocking::FileDialogBuilder;
 
-    let file_path = FileDialogBuilder::new()
-        .add_filter("Chrome/Edge数据库", &["*"])
+    let home_dir = std::env::var("USERPROFILE")
+        .or_else(|_| std::env::var("HOME"))
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| PathBuf::from("."));
+
+    let browser_paths = [
+        home_dir
+            .join("AppData")
+            .join("Local")
+            .join("Google")
+            .join("Chrome")
+            .join("User Data")
+            .join("Default"),
+        home_dir
+            .join("AppData")
+            .join("Local")
+            .join("Microsoft")
+            .join("Edge")
+            .join("User Data")
+            .join("Default"),
+        home_dir
+            .join("AppData")
+            .join("Roaming")
+            .join("Mozilla")
+            .join("Firefox")
+            .join("Profiles"),
+    ];
+
+    // 找到第一个存在的浏览器路径作为初始目录
+    let initial_dir = browser_paths
+        .iter()
+        .find(|path| path.exists())
+        .unwrap_or(&home_dir);
+
+    let mut dialog = FileDialogBuilder::new()
+        .add_filter("Chrome/Edge历史", &["*"])
+        .add_filter("Firefox历史", &["places.sqlite"])
         .add_filter("SQLite数据库", &["db", "sqlite", "sqlite3"])
-        .add_filter("Firefox数据库", &["sqlite"])
         .add_filter("所有文件", &["*"])
-        .set_title("选择浏览器历史数据库文件")
-        .pick_file();
+        .set_title("选择浏览器历史数据库文件");
+
+    // 设置初始目录
+    if initial_dir.exists() {
+        dialog = dialog.set_directory(initial_dir);
+    }
+
+    let file_path = dialog.pick_file();
 
     Ok(file_path.map(|p| p.to_string_lossy().to_string()))
 }
