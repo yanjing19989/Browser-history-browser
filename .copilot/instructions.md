@@ -7,12 +7,14 @@ This is a **Browser History Visualization** desktop application built with Tauri
 Key Features:
 - **Theme System**: Auto/light/dark mode with system preference detection
 - **Interactive History**: Sortable columns with visual indicators, enhanced pagination with direct page navigation
-- **Detail Views**: Comprehensive item information with action buttons
+- **Panel Management**: Toggleable filter and details panels with overlay-based design and responsive visibility
+- **Detail Views**: Comprehensive item information with action buttons and enhanced panel management
 - **User Feedback**: Toast notifications for all user actions
 - **External Integration**: Open links in default browser
-- **Browser Database Sync**: Import and manage browser history databases from Chrome, Edge, Firefox, and Safari
-- **Modern UI**: Glass morphism effects, semi-transparent backgrounds, rounded corners, and enhanced visual styling
+- **Browser Database Sync**: Import and manage browser history databases from Chrome, Edge, Firefox, and Safari with enhanced cleanup capabilities
+- **Modern UI**: Optimized glass morphism effects with performance improvements, semi-transparent backgrounds, rounded corners, and enhanced visual styling
 - **Statistics Dashboard**: Unified KPI cards with top visited sites ranking and improved metrics calculation
+- **Performance Optimization**: Reduced GPU usage through optimized backdrop-filter implementation and efficient overlay design
 
 ## Architecture
 
@@ -73,10 +75,10 @@ Key Features:
 
 ### Frontend (`src/`)
 
-- **`index.html`**: Main application UI with Chinese/English mixed interface, includes theme switcher and enhanced pagination controls
-- **`main.js`**: JavaScript application logic using Tauri API (`window.__TAURI__.tauri.invoke`), includes sorting, detail view functionality, and pagination enhancements
-- **`settings.html`/`settings.js`**: Settings page for database configuration, includes theme switcher and browser database synchronization interface
-- **`style.css`**: Application styling with dark/light theme support, modern glass morphism effects, and enhanced visual design
+- **`index.html`**: Main application UI with Chinese/English mixed interface, includes theme switcher, enhanced pagination controls, and toggleable panel management
+- **`main.js`**: JavaScript application logic using Tauri API (`window.__TAURI__.tauri.invoke`), includes sorting, detail view functionality, pagination enhancements, and panel visibility management with overlay-based interactions
+- **`settings.html`/`settings.js`**: Settings page for database configuration, includes theme switcher, browser database synchronization interface, and enhanced file management capabilities
+- **`style.css`**: Application styling with dark/light theme support, modern optimized glass morphism effects with performance improvements, overlay-based panel design, and enhanced visual styling
 - **`theme.js`**: Theme management system with auto/light/dark modes
 - **`theme-init.js`**: Prevents theme flicker by applying theme before page render
 
@@ -164,10 +166,39 @@ Key Features:
    fetchHistory();
    ```
 
+6. **Panel Visibility Management**: Overlay-based design with optimized performance
+   ```javascript
+   // Toggle panels with CSS class-based visibility
+   document.querySelector('.filters').classList.toggle('visible');
+   // Click outside to close panels
+   document.addEventListener('click', (e) => {
+       if (!e.target.closest('.filters')) {
+           hideFilters();
+       }
+   });
+   ```
+
+7. **Performance-Optimized Styling**: Reduced backdrop-filter usage for better GPU performance
+   ```css
+   /* Use backdrop-filter sparingly for performance */
+   .panel {
+       background: rgba(255, 255, 255, 0.9);
+       /* backdrop-filter: blur(10px); - use only when necessary */
+   }
+   ```
+
 6. **File Dialog Operations**: Browser database file selection and management
    ```javascript
    const browserDbPath = await invoke('browse_browser_db_file');
    await invoke('copy_browser_db_to_app', { sourcePath: browserDbPath });
+   ```
+
+7. **Panel State Management**: Control panel visibility and layout
+   ```javascript
+   // Show/hide panels with overlay design
+   const filtersVisible = state.filtersVisible;
+   const detailsVisible = state.detailsVisible;
+   updateLayout(); // Adjust layout based on panel states
    ```
 
 ## Database Schema
@@ -198,10 +229,12 @@ Sorting is supported on `title`, `last_visited_time`, and `num_visits` fields.
 4. **Testing**: Cargo test support (minimal tests currently)
 5. **Build Scripts**: npm scripts for common development tasks
 6. **Theme Management**: Systematic theme switching with anti-flicker protection
-7. **User Experience**: Interactive sorting, detail views, toast notifications, enhanced pagination
-8. **File Management**: Browser database synchronization with cross-platform file operations
-9. **Modern UI Design**: Glass morphism effects, semi-transparent backgrounds, rounded corners
+7. **User Experience**: Interactive sorting, detail views, toast notifications, enhanced pagination, and toggleable panel management
+8. **File Management**: Browser database synchronization with cross-platform file operations and enhanced cleanup capabilities
+9. **Modern UI Design**: Optimized glass morphism effects with performance considerations, semi-transparent backgrounds, rounded corners, and overlay-based panel design
 10. **Statistics Display**: Unified KPI cards with top sites ranking and improved metrics
+11. **Performance Optimization**: Reduced GPU usage through minimized backdrop-filter effects and efficient rendering strategies
+12. **Layout Management**: Flexible layout system with overlay support and responsive panel management
 
 ## Important Files to Know
 
@@ -211,7 +244,7 @@ Sorting is supported on `title`, `last_visited_time`, and `num_visits` fields.
 - **Entry Points**: `src-tauri/src/main.rs` and `src/index.html`
 - **Theme System**: `src/theme.js` and `src/theme-init.js` - Complete theme management
 - **Browser Database Sync**: Settings page components for browser database management
-- **Enhanced UI**: Modern styling components in `src/style.css` with glass morphism effects
+- **Enhanced UI**: Modern styling components in `src/style.css` with optimized glass morphism effects, overlay-based design patterns, and performance improvements
 
 ## Common Operations
 
@@ -239,7 +272,23 @@ Sorting is supported on `title`, `last_visited_time`, and `num_visits` fields.
 2. Copy browser database to app: `invoke('copy_browser_db_to_app', { sourcePath })`
 3. Set browser database as data source: `invoke('set_browser_db_path', { path })`
 4. Open database directory: `invoke('open_db_directory')`
-5. Clean up old databases: `invoke('cleanup_old_dbs')`
+5. Clean up old databases: `invoke('cleanup_old_dbs')` - now handles .db, .db-shm, and .db-wal files
+
+### Panel Visibility Management
+
+1. Toggle filter panel visibility: `toggleFilters()` - uses CSS class-based visibility with overlay design
+2. Show details panel: `showDetails(item)` - displays item details in overlay panel
+3. Hide details panel: `hideDetails()` - closes details panel and updates layout
+4. Update layout based on panel states: `updateLayout()` - responsive layout adjustment
+5. Click outside to close: Automatic panel closure when clicking outside panel areas
+
+### Performance Optimization
+
+1. Use backdrop-filter sparingly for better GPU performance
+2. Prefer CSS transforms and opacity for animations
+3. Minimize use of expensive visual effects during interactions
+4. Use overlay-based design patterns for better performance
+5. Optimize panel transitions with efficient CSS properties
 
 ### Enhanced Pagination
 
@@ -250,11 +299,14 @@ Sorting is supported on `title`, `last_visited_time`, and `num_visits` fields.
 
 ### Frontend State Updates
 
-1. Update the global `state` object (including sort parameters)
+1. Update the global `state` object (including sort parameters and panel visibility states)
 2. Call corresponding fetch functions
 3. Re-render affected UI components
 4. Update sort indicators for table headers
 5. Handle pagination state changes and page input validation
+6. Manage panel visibility states (`filtersVisible`, `detailsVisible`)
+7. Update layout responsively based on panel states
+8. Handle overlay interactions and click-outside-to-close functionality
 
 ## Development Environment
 
@@ -266,8 +318,11 @@ Sorting is supported on `title`, `last_visited_time`, and `num_visits` fields.
 ## Code Style
 
 - **Rust**: Follow standard Rust conventions with `cargo fmt`
-- **JavaScript**: ES6+ features, async/await patterns
-- **HTML/CSS**: Semantic HTML with CSS Grid/Flexbox layouts, theme-aware styling
+- **JavaScript**: ES6+ features, async/await patterns, event-driven panel management
+- **HTML/CSS**: Semantic HTML with Flexbox layouts for responsive design, overlay-based panel patterns, theme-aware styling
 - **Comments**: Document complex business logic and non-obvious code patterns
 - **Theme Classes**: Use CSS custom properties for theme-specific values
 - **User Feedback**: Provide toast notifications for user actions
+- **Performance**: Minimize backdrop-filter usage, prefer transforms and opacity for animations
+- **Panel Design**: Use overlay patterns with CSS class-based visibility management
+- **Layout Management**: Implement responsive layouts that adapt to panel states
