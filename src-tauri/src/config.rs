@@ -7,7 +7,13 @@ use std::path::{Path, PathBuf};
 pub struct AppConfig {
     pub db_path: Option<String>,
     pub browser_db_path: Option<String>,
+    #[serde(default = "default_top_sites_count")]
+    pub top_sites_count: u32,
     pub last_updated: i64,
+}
+
+fn default_top_sites_count() -> u32 {
+    6
 }
 
 impl Default for AppConfig {
@@ -15,6 +21,7 @@ impl Default for AppConfig {
         Self {
             db_path: None,
             browser_db_path: None,
+            top_sites_count: 6,
             last_updated: chrono::Utc::now().timestamp(),
         }
     }
@@ -71,6 +78,16 @@ impl AppConfig {
 
     pub fn set_browser_db_path(&mut self, path: String) -> Result<()> {
         self.browser_db_path = Some(path);
+        self.last_updated = chrono::Utc::now().timestamp();
+        self.save()?;
+        Ok(())
+    }
+
+    pub fn set_top_sites_count(&mut self, count: u32) -> Result<()> {
+        if count == 0 || count > 50 {
+            return Err(anyhow::anyhow!("TOP站点数量必须在1-50之间"));
+        }
+        self.top_sites_count = count;
         self.last_updated = chrono::Utc::now().timestamp();
         self.save()?;
         Ok(())

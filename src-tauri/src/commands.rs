@@ -205,6 +205,8 @@ pub fn stats_overview(time_range: Option<String>) -> AppResult<OverviewStats> {
     })?;
 
     // Top entities - 改为返回站点名称
+    let config = crate::config::AppConfig::load().unwrap_or_default();
+    let top_sites_limit = config.top_sites_count;
     let top_entities: Vec<String> = with_conn(|conn| {
         // 提取站点域名并按访问次数排序
         let site_sql = format!(
@@ -229,8 +231,8 @@ pub fn stats_overview(time_range: Option<String>) -> AppResult<OverviewStats> {
             {} 
             GROUP BY site_name 
             ORDER BY total_visits DESC 
-            LIMIT 6",
-            where_sql
+            LIMIT {}",
+            where_sql, top_sites_limit
         );
 
         let mut stmt = conn.prepare(&site_sql)?;
@@ -500,4 +502,15 @@ pub fn cleanup_old_dbs() -> AppResult<String> {
     }
 
     Ok(format!("已清理 {} 个旧数据库文件", deleted_count))
+}
+
+#[tauri::command]
+pub fn set_top_sites_count(count: u32) -> AppResult<String> {
+    let mut config = AppConfig::load().map_err(|e| AppError::Internal(e.to_string()))?;
+
+    config
+        .set_top_sites_count(count)
+        .map_err(|e| AppError::Invalid(e.to_string()))?;
+
+    Ok(format!("TOP站点数量已设置为 {}", count))
 }
