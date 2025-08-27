@@ -42,6 +42,26 @@ Key Features:
 └──────────────────────────────────────┘
 ```
 
+## Getting Started
+
+For new contributors working on this project:
+
+1. **Prerequisites**: Ensure you have Rust (stable), Node.js 18+, and system dependencies installed
+2. **Initial Setup**: 
+   ```bash
+   # Clone and install dependencies
+   npm install  # or pnpm install
+   
+   # Verify setup
+   npm run check  # Check Rust compilation
+   ```
+3. **Development Workflow**: 
+   ```bash
+   npm run dev    # Start development server
+   npm run build  # Build for production
+   ```
+4. **First Steps**: Start by exploring `src/main.js` (frontend) and `src-tauri/src/commands.rs` (backend)
+
 ## Tech Stack
 
 - **Desktop Framework**: Tauri v1.x
@@ -226,7 +246,10 @@ Sorting is supported on `title`, `last_visited_time`, and `num_visits` fields.
 1. **Code Organization**: Modular structure with clear separation of concerns
 2. **Error Handling**: Comprehensive error types with user-friendly messages
 3. **Configuration**: JSON-based configuration with validation
-4. **Testing**: Cargo test support (minimal tests currently)
+4. **Testing**: Currently minimal test coverage - contributions welcome for:
+   - Unit tests for database operations (`cargo test`)
+   - Integration tests for Tauri commands
+   - Frontend JavaScript testing
 5. **Build Scripts**: npm scripts for common development tasks
 6. **Theme Management**: Systematic theme switching with anti-flicker protection
 7. **User Experience**: Interactive sorting, detail views, toast notifications, enhanced pagination, and toggleable panel management
@@ -312,7 +335,9 @@ Sorting is supported on `title`, `last_visited_time`, and `num_visits` fields.
 
 - **Rust**: Stable toolchain required
 - **Node.js**: 18+ required for frontend tooling
-- **System Dependencies**: May require GTK/WebKit libraries on Linux
+- **System Dependencies**: 
+  - Linux: `libgtk-3-dev libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev libsoup2.4-dev`
+  - Windows/macOS: Usually no additional dependencies needed
 - **Commands**: Use `npm run dev` for development, `npm run build` for production
 
 ## Code Style
@@ -326,3 +351,68 @@ Sorting is supported on `title`, `last_visited_time`, and `num_visits` fields.
 - **Performance**: Minimize backdrop-filter usage, prefer transforms and opacity for animations
 - **Panel Design**: Use overlay patterns with CSS class-based visibility management
 - **Layout Management**: Implement responsive layouts that adapt to panel states
+
+## Testing Guidelines
+
+Currently the project has minimal test coverage. When adding tests:
+
+### Rust Testing
+```rust
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[test]
+    fn test_database_operations() {
+        // Test database functions
+    }
+}
+```
+
+### Frontend Testing  
+- Use browser dev tools for debugging
+- Test theme switching across all modes
+- Verify toast notifications appear correctly
+- Test panel toggle functionality
+
+### Integration Testing
+- Verify Tauri commands work end-to-end
+- Test database file operations
+- Validate configuration loading/saving
+
+## Troubleshooting
+
+### Common Development Issues
+
+1. **Build Failures on Linux**: Install system dependencies:
+   ```bash
+   sudo apt-get install libgtk-3-dev libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev libsoup2.4-dev
+   ```
+
+2. **Database Connection Issues**: 
+   - Check database path in configuration
+   - Ensure SQLite file permissions are correct
+   - Use `npm run check` to verify Rust compilation
+
+3. **Theme Flicker**: 
+   - Ensure `theme-init.js` loads before other scripts
+   - Check localStorage permissions
+
+4. **Panel Layout Issues**:
+   - Verify CSS class names match JavaScript selectors
+   - Check for conflicting z-index values
+
+### Performance Issues
+- If UI feels sluggish, check for excessive backdrop-filter usage
+- Monitor browser dev tools for memory leaks
+- Reduce animation complexity if needed
+
+## Contribution Guidelines
+
+1. **Code Style**: Follow existing patterns and run `cargo fmt` for Rust code
+2. **Error Handling**: Always use `AppResult<T>` for Tauri commands
+3. **Testing**: Add tests for new functionality when possible
+4. **Documentation**: Update this file when adding new patterns or commands
+5. **Performance**: Consider performance impact of visual effects and database operations
+6. **Accessibility**: Ensure new UI elements are accessible
+7. **Localization**: Consider Chinese/English mixed interface requirements
