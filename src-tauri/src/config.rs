@@ -2,6 +2,11 @@ use anyhow::Result;
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::{Path, PathBuf};
+use once_cell::sync::OnceCell;
+use std::sync::Mutex;
+
+// AppConfig的全局内存缓存，以避免频繁的磁盘读取
+static GLOBAL_CONFIG: OnceCell<Mutex<AppConfig>> = OnceCell::new();
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct AppConfig {
@@ -40,16 +45,24 @@ impl AppConfig {
     }
 
     pub fn load() -> Result<Self> {
-        let config_path = Self::config_file_path()?;
-
-        if !config_path.exists() {
-            let default_config = Self::default();
-            default_config.save()?;
-            return Ok(default_config);
+        if let Some(m) = GLOBAL_CONFIG.get() {
+            let cfg = m.lock().unwrap();
+            return Ok(cfg.clone());
         }
 
-        let content = fs::read_to_string(&config_path)?;
-        let config: Self = serde_json::from_str(&content)?;
+        let config_path = Self::config_file_path()?;
+
+        let config = if !config_path.exists() {
+            let default_config = Self::default();
+            let _ = serde_json::to_string_pretty(&default_config)?;
+            default_config.save()?;
+            default_config
+        } else {
+            let content = fs::read_to_string(&config_path)?;
+            let config: Self = serde_json::from_str(&content)?;
+            config
+        };
+        let _ = GLOBAL_CONFIG.set(Mutex::new(config.clone()));
         Ok(config)
     }
 
@@ -57,6 +70,14 @@ impl AppConfig {
         let config_path = Self::config_file_path()?;
         let content = serde_json::to_string_pretty(self)?;
         fs::write(&config_path, content)?;
+        // 更新全局内存缓存（如果存在）
+        if let Some(m) = GLOBAL_CONFIG.get() {
+            let mut g = m.lock().unwrap();
+            *g = self.clone();
+        } else {
+            let _ = GLOBAL_CONFIG.set(Mutex::new(self.clone()));
+        }
+
         Ok(())
     }
 
