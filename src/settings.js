@@ -364,13 +364,13 @@ async function applyTopSitesCount() {
     showToast(result, 'success');
     // 更新当前配置
     currentConfig = await invoke('get_config');
-    updateTopSitesButtons();
   } catch (error) {
     console.error('设置TOP站点数量失败:', error);
     showToast('设置失败: ' + error, 'error');
   } finally {
     elements.applyTopSitesBtn.disabled = false;
   }
+  updateTopSitesButtons();
 }
 
 // 初始化

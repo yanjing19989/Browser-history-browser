@@ -1,8 +1,8 @@
 use anyhow::Result;
+use once_cell::sync::OnceCell;
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::{Path, PathBuf};
-use once_cell::sync::OnceCell;
 use std::sync::Mutex;
 
 // AppConfig的全局内存缓存，以避免频繁的磁盘读取
