@@ -108,6 +108,24 @@
         <p><strong>注意:</strong> 如同步失败，可在浏览器关闭时复制数据库文件，避免数据库锁定问题。</p>
       </div>
     </section>
+
+    <section class="settings-section">
+      <h2>界面设置</h2>
+      <div class="setting-item">
+        <div class="number-input-container">
+          <label for="topSitesCount">TOP站点显示数量:</label>
+          <input type="number" id="topSitesCount" min="1" max="50" value="6" />
+          <span class="unit-label">个</span>
+        </div>
+        <div class="setting-description">
+          设置统计页面中显示的TOP访问站点数量，范围：1-50个
+        </div>
+      </div>
+
+      <div class="setting-actions">
+        <button id="applyTopSitesBtn" class="btn btn-primary" disabled>应用设置</button>
+      </div>
+    </section>
   </main>
 
   <div id="messageToast" class="toast" style="display: none;">

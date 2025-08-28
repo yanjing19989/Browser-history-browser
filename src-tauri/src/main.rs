@@ -8,8 +8,8 @@ mod domain;
 
 use commands::{
     browse_browser_db_file, browse_db_file, cleanup_old_dbs, copy_browser_db_to_app, get_config,
-    list_history, open_db_directory, set_browser_db_path, set_db_path, stats_overview,
-    validate_db_path,
+    list_history, open_db_directory, set_browser_db_path, set_db_path, set_top_sites_count,
+    stats_overview, validate_db_path,
 };
 
 fn main() {
@@ -25,7 +25,8 @@ fn main() {
             copy_browser_db_to_app,
             set_browser_db_path,
             open_db_directory,
-            cleanup_old_dbs
+            cleanup_old_dbs,
+            set_top_sites_count
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

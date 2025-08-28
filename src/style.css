@@ -606,15 +606,21 @@ body {
   transform: translateY(-1px);
 }
 
+.number-input-container,
 .page-nav {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   padding: 0 1rem;
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: var(--text-secondary);
 }
 
+.number-input-container {
+  padding: 0 0;
+}
+
+.number-input-container input,
 .page-nav input {
   width: 70px;
   padding: 0.5rem 0.75rem;
@@ -629,6 +635,7 @@ body {
   box-shadow: var(--shadow-sm);
 }
 
+.number-input-container input:focus,
 .page-nav input:focus {
   outline: none;
   border-color: var(--accent-primary);
@@ -637,6 +644,8 @@ body {
 }
 
 /* 隐藏数字输入框的上下箭头 */
+.number-input-container input::-webkit-outer-spin-button,
+.number-input-container input::-webkit-inner-spin-button,
 .page-nav input::-webkit-outer-spin-button,
 .page-nav input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -646,6 +655,10 @@ body {
 .page-nav input[type=number] {
   -moz-appearance: textfield;
   appearance: textfield;
+}
+
+.number-input-container label {
+  margin-bottom: 0 !important;
 }
 
 .details h2 {
