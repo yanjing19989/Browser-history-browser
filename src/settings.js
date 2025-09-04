@@ -26,22 +26,17 @@ const elements = {
 let currentConfig = null;
 
 function showToast(message, type = 'info') {
-  // 移除已存在的提示
   const existingToast = document.querySelector('.toast');
   if (existingToast) {
     existingToast.remove();
   }
 
-  // 创建新的提示
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
   toast.textContent = message;
   document.body.appendChild(toast);
 
-  // 显示提示
   setTimeout(() => toast.classList.add('show'), 100);
-
-  // 3秒后自动隐藏
   setTimeout(() => {
     toast.classList.remove('show');
     setTimeout(() => toast.remove(), 300);
@@ -149,13 +144,11 @@ async function applySettings() {
     elements.applyBtn.disabled = true;
 
     const result = await invoke('set_db_path', { path });
-
     updateStatus('ok', '数据库配置成功');
     showToast(result, 'success');
 
     // 更新当前配置
     currentConfig = await invoke('get_config');
-
   } catch (error) {
     console.error('应用设置失败:', error);
     updateStatus('error', '设置失败: ' + error);
@@ -301,17 +294,14 @@ async function syncBrowserDb() {
 
     updateSyncStatus('ok', '同步成功');
     showToast('浏览器数据库同步成功!', 'success');
-
-    updateSyncButtons();
-
   } catch (error) {
     console.error('同步失败:', error);
     updateSyncStatus('error', '同步失败: ' + error);
     showToast('同步失败: ' + error, 'error');
   } finally {
     elements.syncBtn.disabled = false;
-    updateSyncButtons();
   }
+  updateSyncButtons();
 }
 
 // 打开数据库所在目录
@@ -332,10 +322,7 @@ async function openDbDirectory() {
 // 自动清理旧数据库文件
 async function cleanupOldDbs() {
   const confirmed = await ask('确定要清理除当前使用外的所有.db文件吗？此操作不可撤销！', {
-    title: '确认清理',
-    type: 'warning',
-    okLabel: '确定清理',
-    cancelLabel: '取消'
+    title: '确认清理', type: 'warning', okLabel: '确定清理', cancelLabel: '取消'
   });
 
   if (!confirmed) {
