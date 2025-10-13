@@ -176,7 +176,7 @@ function updateSortIndicators() {
 function toggleFilters() {
   state.filtersVisible = !state.filtersVisible;
   const filtersPanel = document.querySelector('.filters');
-  
+
   if (state.filtersVisible) {
     filtersPanel.classList.add('visible');
   } else {
@@ -371,15 +371,7 @@ function fmtTime(ts) {
   if (!ts || ts === 0) return '-';
   // ts 是从1970年1月1日UTC开始的秒数，需要转换为毫秒
   const d = new Date(ts * 1000);
-  // 使用本地时间格式显示
-  return d.toLocaleString('zh-CN', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit'
-  });
+  return d.toLocaleString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
 }
 
 // Events
@@ -388,6 +380,14 @@ window.addEventListener('keydown', e => { if (e.ctrlKey && e.key.toLowerCase() =
 document.getElementById('searchBtn').addEventListener('click', () => {
   state.keyword = document.getElementById('searchInput').value.trim();
   state.page = 1; fetchList();
+});
+
+document.getElementById('searchInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    state.keyword = document.getElementById('searchInput').value.trim();
+    state.page = 1; fetchList();
+  }
 });
 
 document.getElementById('applyFilters').addEventListener('click', () => {
@@ -483,10 +483,10 @@ document.getElementById('detailsCloseBtn').addEventListener('click', hideDetails
 document.addEventListener('click', (e) => {
   const filtersPanel = document.querySelector('.filters');
   const filterBtn = document.getElementById('filterToggleBtn');
-  
-  if (state.filtersVisible && 
-      !filtersPanel.contains(e.target) && 
-      !filterBtn.contains(e.target)) {
+
+  if (state.filtersVisible &&
+    !filtersPanel.contains(e.target) &&
+    !filterBtn.contains(e.target)) {
     toggleFilters();
   }
 });
@@ -495,7 +495,7 @@ document.addEventListener('click', (e) => {
 async function initializeApp() {
   await fetchStats();
   await fetchList();
-  
+
   // 显示窗口
   if (window.__TAURI__.window) {
     const { appWindow } = window.__TAURI__.window;
