@@ -56,7 +56,7 @@ async function fetchList() {
       filters.time_range = state.timeRange;
     }
 
-    console.log('发送过滤器:', filters); // 调试日志
+    // console.log('发送过滤器:', filters); // 调试日志
 
     const res = await invoke('list_history', {
       page: state.page,
@@ -75,7 +75,7 @@ async function fetchList() {
 function renderKpis(stats) {
   const kpis = document.getElementById('kpis');
   kpis.innerHTML = '';
-
+  // console.log('渲染KPI数据:', stats); // 调试日志
   // 创建统一的大卡片
   const card = document.createElement('div');
   card.className = 'kpi-card';
